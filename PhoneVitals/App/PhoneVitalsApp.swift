@@ -12,7 +12,7 @@ import SwiftData
 struct PhoneVitalsApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            SystemDataProfile.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,7 +25,7 @@ struct PhoneVitalsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainSystemDataView()
         }
         .modelContainer(sharedModelContainer)
     }

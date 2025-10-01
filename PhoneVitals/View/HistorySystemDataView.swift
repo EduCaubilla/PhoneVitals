@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  HistorySystemDataView.swift
 //  PhoneVitals
 //
 //  Created by Edu Caubilla on 1/10/25.
@@ -8,9 +8,9 @@
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
+struct HistorySystemDataView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query private var items: [SystemDataProfile]
 
     var body: some View {
         NavigationSplitView {
@@ -24,25 +24,8 @@ struct ContentView: View {
                 }
                 .onDelete(perform: deleteItems)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
         } detail: {
             Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
         }
     }
 
@@ -56,6 +39,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+    HistorySystemDataView()
+        .modelContainer(for: SystemDataProfile.self, inMemory: true)
 }

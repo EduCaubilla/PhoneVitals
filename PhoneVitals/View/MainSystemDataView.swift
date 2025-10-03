@@ -11,7 +11,6 @@ import SwiftData
 struct MainSystemDataView: View {
     //MARK: - PROPERTIES
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [SystemDataProfile]
 
     @State private var currentOverviewTip: String = "Good"
     @State private var currentOverviewValue: Double = 80.0

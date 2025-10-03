@@ -9,18 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct HistorySystemDataView: View {
-    //MARK: - PROPERTIES
     @Environment(\.modelContext) private var modelContext
-//    @Query private var items: [SystemDataProfile]
-
-    //MARK: - FUNCTIONS
-//    private func deleteItems(offsets: IndexSet) {
-//        withAnimation {
-//            for index in offsets {
-//                modelContext.delete(items[index])
-//            }
-//        }
-//    }
 
     //MARK: - BODY
     var body: some View {
@@ -91,5 +80,4 @@ struct HistorySystemDataView: View {
 //MARK: - PREVIEW
 #Preview {
     HistorySystemDataView()
-//        .modelContainer(for: SystemDataProfile.self, inMemory: true)
 }

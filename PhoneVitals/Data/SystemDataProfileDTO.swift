@@ -1,15 +1,16 @@
 //
-//  SystemDataProfileModel.swift
+//  Item.swift
 //  PhoneVitals
 //
-//  Created by Edu Caubilla on 3/10/25.
+//  Created by Edu Caubilla on 1/10/25.
 //
 
 import Foundation
 import SwiftData
 
-public struct SystemDataProfileModel: Codable, Equatable {
-    var id: UUID?
+@Model
+final class SystemDataProfileDTO {
+    @Attribute(.unique) var id: UUID?
     var thermalState: String
 
     var batteryLevel: Double
@@ -43,7 +44,7 @@ public struct SystemDataProfileModel: Codable, Equatable {
         memoryFree: Int64,
         timestamp: Date
     ) {
-        self.id = id
+        self.id = id ?? UUID()
         self.thermalState = thermalState
         self.batteryLevel = batteryLevel
         self.batteryState = batteryState
@@ -57,8 +58,8 @@ public struct SystemDataProfileModel: Codable, Equatable {
         self.timestamp = timestamp
     }
 
-    func mapToDTO() -> SystemDataProfileDTO {
-        return SystemDataProfileDTO(
+    func mapToModel() -> SystemDataProfileModel {
+        return SystemDataProfileModel(
             id: id,
             thermalState: thermalState,
             batteryLevel: batteryLevel,
@@ -71,6 +72,6 @@ public struct SystemDataProfileModel: Codable, Equatable {
             memoryCapacity: memoryCapacity,
             memoryFree: memoryFree,
             timestamp: timestamp
-        )
+            )
     }
 }

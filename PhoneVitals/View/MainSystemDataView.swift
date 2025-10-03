@@ -79,9 +79,9 @@ struct MainSystemDataView: View {
 
                         /// Overview Data
                         LazyHGrid(rows: [
-                            GridItem(.fixed(80)),
-                            GridItem(.fixed(80)),
-                            GridItem(.fixed(80))
+                            GridItem(.fixed(70)),
+                            GridItem(.fixed(70)),
+                            GridItem(.fixed(70))
                         ], spacing: 0) {
                             ForEach(0..<5) { index in
                                 StateLinearIconBadge(title: SystemDataServiceTitle.allCases[index].rawValue, titleFont: .callout, value: "Good", lineLevel: 80.0, lineThickness: 10.0, textAlignment: .leading)
@@ -124,8 +124,7 @@ struct MainSystemDataView: View {
                             }
                         }
                         .frame(maxWidth: .infinity, maxHeight: 100, alignment: .center)
-//                        .background(.yellow)
-                        .padding(.bottom, 5)
+                        .padding(.vertical, 5)
 
                         //MARK: - Additional Information
                         VStack(alignment: .center, spacing: 0) {
@@ -146,6 +145,7 @@ struct MainSystemDataView: View {
                                             .font(.footnote)
                                     }
                                 } //: ROW 1
+                                .padding(.bottom, 5)
 
                                 GridRow (alignment: .top) {
 
@@ -179,6 +179,7 @@ struct MainSystemDataView: View {
                                         .padding(.top, 3)
                                     }
                                 } //: ROW 2
+                                .padding(.bottom, 5)
 
                                 GridRow (alignment: .top) {
 
@@ -200,6 +201,7 @@ struct MainSystemDataView: View {
                                         .padding(.top, 3)
                                     }
                                 } //: ROW 3
+                                .padding(.bottom, 5)
                             }
                         }
                         .padding(.horizontal, 10)
@@ -210,6 +212,14 @@ struct MainSystemDataView: View {
                     .navigationBarTitleDisplayMode(.inline)
                     .padding(.horizontal, 20)
                     .toolbarBackground(.pvLightGreen, for: .navigationBar)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            NavigationLink(destination: HistorySystemDataView()){
+                                Image(systemName: "clock.arrow.circlepath")
+                                    .foregroundStyle(Color.secondary)
+                            }
+                        }
+                    }
                 } //: SCROLLVIEW
             } //: ZSTACK
         } //: NAV

@@ -38,37 +38,44 @@ struct HistorySystemDataView: View {
                 ScrollView {
                     LazyVStack {
                         ForEach(0..<5) { index in
-                            VStack(alignment: .leading, spacing: 10) {
+                            VStack(alignment: .leading, spacing: 6) {
                                 Text("2 Oct 2025 - 04:47pm")
                                     .font(.subheadline)
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(.secondary)
 
-                                HStack {
+                                HStack(alignment: .center, spacing: 5) {
                                     StateRoundIcon(currentOverviewValue: 50.0, currentOverviewTip: "Fair")
+                                        .padding(.leading, 10)
 
                                     LazyHGrid(rows: [
-                                        GridItem(.fixed(50)),
-                                        GridItem(.fixed(50)),
-                                        GridItem(.fixed(50))
+                                        GridItem(.fixed(30)),
+                                        GridItem(.fixed(30)),
+                                        GridItem(.fixed(30))
                                     ], spacing: 10) {
                                         ForEach(0..<5) { index in
                                             StateLinearIconBadge(
                                                 title: SystemDataServiceTitle.allCases[index].rawValue,
-                                                titleFont: .callout,
-                                                value: "Good",
+                                                titleFont: .caption,
+                                                subtitle: "Good",
+                                                value: "",
                                                 lineLevel: Double.random(in: 0..<100),
                                                 lineThickness: 5.0,
                                                 textAlignment: .leading
                                             )
-                                            .padding(
-                                                .horizontal
-                                            )
+                                            .frame(minWidth: 100, idealWidth: 140, maxWidth: .infinity, alignment: .center)
                                         }
                                     } //: LAZYHGRID - Overview data
-                                }
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                } //: HSTACK
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 5)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.gray, lineWidth: 0.2)
+                                )
+
                             } //: VSTACK
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 10)
+                            .padding(.bottom, 15)
                         } //: FOR LOOP
                     } //: LAZYVSTACK
                     .navigationTitle(Text("Phone Vitals"))
@@ -84,5 +91,5 @@ struct HistorySystemDataView: View {
 //MARK: - PREVIEW
 #Preview {
     HistorySystemDataView()
-        .modelContainer(for: SystemDataProfile.self, inMemory: true)
+//        .modelContainer(for: SystemDataProfile.self, inMemory: true)
 }

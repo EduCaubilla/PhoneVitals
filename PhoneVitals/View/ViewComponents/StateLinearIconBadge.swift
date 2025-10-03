@@ -21,7 +21,7 @@ struct StateLinearIconBadge: View {
     private var batteryLineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .green], startPoint: .leading, endPoint: .trailing) }
 
     private var isBatteryGradient: Bool { title == "Battery" }
-    private var isFontRegular:  Bool  { titleFont == .body || titleFont == .subheadline || titleFont == .callout }
+    private var isFontRegular:  Bool  { titleFont == .body || titleFont == .subheadline || titleFont == .callout || titleFont == .footnote || titleFont == .caption }
 
     //MARK: - BODY
     var body: some View {
@@ -36,11 +36,11 @@ struct StateLinearIconBadge: View {
                     Spacer()
 
                     Text(subtitle)
-                        .font(.footnote)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
-                        .padding(.top, 3)
                 }
             }
+            .padding(.bottom, -2)
 
             Gauge(value: lineLevel, in: 0...100) {}
                 .gaugeStyle(ThickLinearGaugeStyle(thickness: lineThickness, lineColor: isBatteryGradient ? batteryLineGradient : lineGradient))
@@ -49,7 +49,7 @@ struct StateLinearIconBadge: View {
                 Text(value)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .padding(.top, 3)
+                    .padding(.top, 2)
             }
         }
     }
@@ -57,5 +57,5 @@ struct StateLinearIconBadge: View {
 
 //MARK: - PREVIEW
 #Preview {
-    StateLinearIconBadge(title: "Title", titleFont: .headline, subtitle: "", value: "Good", lineLevel: 50.0, lineThickness: 10.0, textAlignment: .center)
+    StateLinearIconBadge(title: "Title", titleFont: .footnote, subtitle: "Good", value: "", lineLevel: 50.0, lineThickness: 10.0, textAlignment: .center)
 }

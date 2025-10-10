@@ -23,22 +23,6 @@ struct MainSystemDataView: View {
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(Color.pvDarkGreen)]
     }
 
-    //MARK: - FUNCTIONS
-    private func addItem() {
-        withAnimation {
-            let newItem = SystemDataProfile(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
-    }
-
     //MARK: - BODY
     var body: some View {
         NavigationStack {
@@ -228,5 +212,5 @@ struct MainSystemDataView: View {
 //MARK: - PREVIEW
 #Preview {
     MainSystemDataView()
-        .modelContainer(for: SystemDataProfile.self, inMemory: true)
+        .modelContainer(for: SystemDataProfileDTO.self, inMemory: true)
 }

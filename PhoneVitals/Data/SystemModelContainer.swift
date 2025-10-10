@@ -7,17 +7,17 @@
 
 import SwiftData
 struct SystemModelContainer {
-    static var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            SystemDataProfileDTO.self,
-        ])
-
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
+    static var shared: ModelContainer {
         do {
+            let schema = Schema([
+                SystemDataProfileDTO.self,
+            ])
+
+            let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
-    }()
+    }
 }

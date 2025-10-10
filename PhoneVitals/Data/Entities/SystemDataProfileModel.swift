@@ -7,23 +7,24 @@
 
 import Foundation
 import SwiftData
+import UIKit
 
 public struct SystemDataProfileModel: Codable, Equatable {
     var id: UUID?
     var thermalState: String
 
     var batteryLevel: Double
-    var batteryState: String
+    var batteryState: Int
 
-    var storageCapacity: Int64
-    var storageUsed: Int64
-    var storageAvailable: Int64
+    var storageCapacity: Int
+    var storageUsed: Int
+    var storageAvailable: Int
 
     var cpuUsage: Double
 
     var memoryUsage: Double
-    var memoryCapacity: Int64
-    var memoryFree: Int64
+    var memoryCapacity: Int
+    var memoryFree: Int
 
     var timestamp: Date
 
@@ -33,14 +34,14 @@ public struct SystemDataProfileModel: Codable, Equatable {
         id: UUID?,
         thermalState: String,
         batteryLevel: Double,
-        batteryState: String,
-        storageCapacity: Int64,
-        storageUsed: Int64,
-        storageAvailable: Int64,
+        batteryState: Int,
+        storageCapacity: Int,
+        storageUsed: Int,
+        storageAvailable: Int,
         cpuUsage: Double,
         memoryUsage: Double,
-        memoryCapacity: Int64,
-        memoryFree: Int64,
+        memoryCapacity: Int,
+        memoryFree: Int,
         timestamp: Date
     ) {
         self.id = id

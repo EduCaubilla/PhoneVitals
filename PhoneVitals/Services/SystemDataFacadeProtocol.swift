@@ -8,7 +8,6 @@
 import Foundation
 
 protocol SystemDataFacadeProtocol {
-
     func getAllSystemData() -> SystemDataProfileModel
-
+    func getAllDeviceData() -> DeviceInfo
 }

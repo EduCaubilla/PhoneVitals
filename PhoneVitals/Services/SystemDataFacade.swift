@@ -9,37 +9,64 @@ import Foundation
 import SwiftUI
 import Combine
 
-class SystemDataFacade : ObservableObject {
-    //MARK: - PROPERTIES
-    var memory : MemoryInfoService
-    var memoryData : MemoryInfo?
-    var cancellables : Set<AnyCancellable> = []
+class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
-    var device : DeviceInfoService
+    //MARK: - PROPERTIES
+    private let memory : MemoryInfoService?
+    private var memoryData : MemoryInfo?
+
+    private let device : DeviceInfoService
+
+    private let systemDataSubject = PassthroughSubject<SystemDataProfileModel?, Never>()
+    private let deviceDataSubject = PassthroughSubject<DeviceInfo, Never>()
+
+    private let loadingSubject = CurrentValueSubject<Bool, Never>(false)
+
+    //MARK: - Publishers for the viewModel to subscribe to
+    var systemDataPublisher : AnyPublisher<SystemDataProfileModel?, Never> {
+        systemDataSubject.eraseToAnyPublisher()
+    }
+
+    var deviceDataPublisher : AnyPublisher<DeviceInfo, Never> {
+        deviceDataSubject.eraseToAnyPublisher()
+    }
+
+    var isLoadingPublisher: AnyPublisher<Bool, Never> {
+        loadingSubject.eraseToAnyPublisher()
+    }
+
+    var cancellables : Set<AnyCancellable> = []
 
     //MARK: - INITIALIZER
     init(memory: MemoryInfoService = MemoryInfoService(),
          device: DeviceInfoService = DeviceInfoService()) {
         self.memory = memory
         self.device = device
+
+        Task {
+            await fetchMemoryData()
+        }
     }
 
     //MARK: - DEINITIALIZER
     deinit {
-        memory.stopMonitoring()
+        memory?.stopMonitoring()
         cancellables.forEach { $0.cancel() }
     }
 
     //MARK: - FUNCTIONS
 
     //MARK: - Memory data monitor
-    func getMemoryData() async {
-        memory.memoryInfoPublisher
+    func fetchMemoryData() async {
+        self.memoryData = memory?.getMemoryData()
+
+        memory?.memoryInfoPublisher
             .sink { info in
                 self.memoryData = info
             }
             .store(in: &cancellables)
-        memory.startMonitoring()
+
+        memory?.startMonitoring()
     }
 
     //MARK: - Device data
@@ -69,18 +96,18 @@ class SystemDataFacade : ObservableObject {
             storageCapacity: storageCapacity,
             storageUsed: storageUsed,
             storageAvailable: storageAvailable,
-            cpuUsage: cpuUsage,
             memoryUsage: memoryUsage,
             memoryCapacity: memoryCapacity,
             memoryFree: memoryFree,
+            cpuUsage: cpuUsage,
             timestamp: Date.now
         )
     }
 
     @MainActor
     private func getThermalState() -> String {
-        let thermalState = ProcessInfo.processInfo.thermalState.rawValue
-        return ThermalStateGrade.mapFromOriginThermalState(state: thermalState)
+        let thermalState = ProcessInfo.processInfo.thermalState
+        return ThermalStateGrade.mapFromOriginThermalStateToString(state: thermalState)
     }
 
     @MainActor
@@ -91,36 +118,57 @@ class SystemDataFacade : ObservableObject {
     }
 
     @MainActor
-    private func getBatteryState() -> Int {
+    private func getBatteryState() -> String {
         UIDevice.current.isBatteryMonitoringEnabled = true
         let batteryState = UIDevice.current.batteryState
-        return batteryState.rawValue
+        return batteryState.displayName
     }
 
     @MainActor
-    private func getStorageCapacity() -> Int {
+    private func getStorageCapacity() -> Double {
         let fileManager = FileManager.default
         let attributes = try! fileManager.attributesOfFileSystem(forPath: NSHomeDirectory())
-        let capacity = attributes[FileAttributeKey.systemSize] as! Int
-        return capacity
+        let capacity = attributes[FileAttributeKey.systemSize] as! Double
+        let capacityResult = Utils.bytesToGigaBytes(capacity)
+        return capacityResult
     }
 
     @MainActor
-    private func getStorageUsed() -> Int {
+    private func getStorageUsed() -> Double {
         let fileManager = FileManager.default
         let attributes = try! fileManager.attributesOfFileSystem(forPath: NSHomeDirectory())
-        let capacity = attributes[FileAttributeKey.systemSize] as! Int
-        let freeSize = attributes[FileAttributeKey.systemFreeSize] as! Int
+        let capacity = attributes[FileAttributeKey.systemSize] as! Double
+        let freeSize = attributes[FileAttributeKey.systemFreeSize] as! Double
         let usage = capacity - freeSize
-        return usage
+        let usageResult = Utils.bytesToGigaBytes(usage)
+        return usageResult
     }
 
     @MainActor
-    private func getStorageAvailable() -> Int {
+    private func getStorageAvailable() -> Double {
         let fileManager = FileManager.default
         let attributes = try! fileManager.attributesOfFileSystem(forPath: NSHomeDirectory())
-        let freeSize = attributes[FileAttributeKey.systemFreeSize] as! Int
-        return freeSize
+        let freeSize = attributes[FileAttributeKey.systemFreeSize] as! Double
+        let freeSizeResult = Utils.bytesToGigaBytes(freeSize)
+        return freeSizeResult
+    }
+
+    @MainActor
+    private func getMemoryUsage() -> Double {
+        let result = (memoryData?.activeMemory ?? 0) + (memoryData?.wiredMemory ?? 0)
+        return result
+    }
+
+    @MainActor
+    private func getMemoryCapacity() -> Double {
+        let result = memoryData?.totalPhysical ?? 0
+        return result
+    }
+
+    @MainActor
+    private func getMemoryFree() -> Double {
+        let result = (memoryData?.totalPhysical ?? 0) - (memoryData?.usedPhysical ?? 0)
+        return result
     }
 
     @MainActor
@@ -162,20 +210,4 @@ class SystemDataFacade : ObservableObject {
 
         return cpuUsage
     }
-
-    @MainActor
-    private func getMemoryUsage() -> Double {
-        return memoryData?.usagePercentege ?? 0
-    }
-
-    @MainActor
-    private func getMemoryCapacity() -> Int {
-        return Int(memoryData?.availablePhysical ?? 0)
-    }
-
-    @MainActor
-    private func getMemoryFree() -> Int {
-        return Int(memoryData?.availablePhysical ?? 0)
-    }
-
 }

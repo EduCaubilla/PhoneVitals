@@ -13,7 +13,7 @@ struct StateLinearIconBadge: View {
     var titleFont : Font = .headline
     var subtitle: String = ""
     let value: String
-    var lineLevel: CGFloat
+    var lineLevel: CGFloat = 0.5
     var lineThickness: CGFloat = 10.0
     var textAlignment: HorizontalAlignment = .leading
 
@@ -42,8 +42,13 @@ struct StateLinearIconBadge: View {
             }
             .padding(.bottom, -2)
 
-            Gauge(value: lineLevel, in: 0...100) {}
-                .gaugeStyle(ThickLinearGaugeStyle(thickness: lineThickness, lineColor: isBatteryGradient ? batteryLineGradient : lineGradient))
+            Gauge(value: lineLevel, in: 0.0...100.0) {}
+                .gaugeStyle(
+                    ThickLinearGaugeStyle(
+                        thickness: lineThickness,
+                        lineColor: isBatteryGradient ? batteryLineGradient : lineGradient
+                    )
+                )
 
             if !value.isEmpty {
                 Text(value)

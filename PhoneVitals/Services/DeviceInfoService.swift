@@ -9,30 +9,24 @@ import Foundation
 import SwiftUI
 
 class DeviceInfoService {
+    //MARK: - PROPERTIES
     private let deviceInfo: DeviceInfo
 
-    private let model = UIDevice.current.model
-    private let systemName = UIDevice.current.systemName
-    private let systemVersion = UIDevice.current.systemVersion
+    private let modelName = UIDevice.modelName
+    private let modelIdentifier = UIDevice.modelIdentifier
     private let deviceSystemVersion = ProcessInfo.processInfo.operatingSystemVersionString
 
+    //MARK: - INITIALIZER
     init() {
         self.deviceInfo = DeviceInfo(
-            model: model,
-            systemName: systemName,
-            systemVersion: systemVersion,
+            modelName: modelName,
+            modelIdentifier: modelIdentifier,
             deviceSystemVersion: deviceSystemVersion
         )
     }
 
+    //MARK: - FUNCTIONS
     public func getDeviceInfo() -> DeviceInfo {
         return deviceInfo
     }
-}
-
-struct DeviceInfo {
-    let model: String
-    let systemName: String
-    let systemVersion: String
-    let deviceSystemVersion: String
 }

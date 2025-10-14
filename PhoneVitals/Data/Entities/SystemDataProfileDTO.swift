@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import SwiftData
 
 @Model
@@ -16,15 +17,15 @@ final class SystemDataProfileDTO {
     var batteryLevel: Double
     var batteryState: Int
 
-    var storageCapacity: Int
-    var storageUsed: Int
-    var storageAvailable: Int
-
-    var cpuUsage: Double
+    var storageCapacity: Double
+    var storageUsed: Double
+    var storageAvailable: Double
 
     var memoryUsage: Double
-    var memoryCapacity: Int
-    var memoryFree: Int
+    var memoryCapacity: Double
+    var memoryFree: Double
+
+    var cpuUsage: Double
 
     var timestamp: Date
 
@@ -32,29 +33,29 @@ final class SystemDataProfileDTO {
 
     init(
         id: UUID?,
-        thermalState: String,
+        thermalState: ThermalStateGrade,
         batteryLevel: Double,
         batteryState: Int,
-        storageCapacity: Int,
-        storageUsed: Int,
-        storageAvailable: Int,
-        cpuUsage: Double,
+        storageCapacity: Double,
+        storageUsed: Double,
+        storageAvailable: Double,
         memoryUsage: Double,
-        memoryCapacity: Int,
-        memoryFree: Int,
+        memoryCapacity: Double,
+        memoryFree: Double,
+        cpuUsage: Double,
         timestamp: Date
     ) {
         self.id = id ?? UUID()
-        self.thermalState = thermalState
+        self.thermalState = thermalState.rawValue
         self.batteryLevel = batteryLevel
         self.batteryState = batteryState
         self.storageCapacity = storageCapacity
         self.storageUsed = storageUsed
         self.storageAvailable = storageAvailable
-        self.cpuUsage = cpuUsage
         self.memoryUsage = memoryUsage
         self.memoryCapacity = memoryCapacity
         self.memoryFree = memoryFree
+        self.cpuUsage = cpuUsage
         self.timestamp = timestamp
     }
 
@@ -63,14 +64,14 @@ final class SystemDataProfileDTO {
             id: id,
             thermalState: thermalState,
             batteryLevel: batteryLevel,
-            batteryState: batteryState,
+            batteryState: UIDevice.BatteryState(rawValue: batteryState)!.displayName,
             storageCapacity: storageCapacity,
             storageUsed: storageUsed,
             storageAvailable: storageAvailable,
-            cpuUsage: cpuUsage,
             memoryUsage: memoryUsage,
             memoryCapacity: memoryCapacity,
             memoryFree: memoryFree,
+            cpuUsage: cpuUsage,
             timestamp: timestamp
             )
     }

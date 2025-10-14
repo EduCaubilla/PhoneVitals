@@ -10,12 +10,13 @@ import UIKit
 import Combine
 
 class MemoryInfoService {
-
+    //MARK: - PROPERTIES
     private var timer: Timer?
     private var cancellables = Set<AnyCancellable>()
 
     let memoryInfoPublisher = PassthroughSubject<MemoryInfo, Never>()
 
+    //MARK: - FUNCTIONS
     func startMonitoring(interval: TimeInterval = 1.0) {
         stopMonitoring()
 
@@ -65,18 +66,23 @@ class MemoryInfoService {
 
         let appUsedMemory = getAppMemoryUsage()
 
-        return MemoryInfo(
-            totalPhysical: totalPhysical,
-            availablePhysical: availablePhysical,
-            usedPhysical: usedPhysical,
-            activeMemory: activeMemory,
-            inactiveMemory: inactiveMemory,
-            wiredMemory: wiredMemory,
-            compressedMemory: compressedMemory,
-            freeMemory: freeMemory,
-            purgeableMemory: purgeableMemory,
-            appUsedMemory: appUsedMemory
+        let resultInfo = MemoryInfo(
+            totalPhysical: Utils.bytesToGigaBytes(Double(totalPhysical)),
+            availablePhysical: Utils.bytesToGigaBytes(Double(availablePhysical)),
+            usedPhysical: Utils.bytesToGigaBytes(Double(usedPhysical)),
+            activeMemory: Utils.bytesToGigaBytes(Double(activeMemory)),
+            inactiveMemory: Utils.bytesToGigaBytes(Double(inactiveMemory)),
+            wiredMemory: Utils.bytesToGigaBytes(Double(wiredMemory)),
+            compressedMemory: Utils.bytesToGigaBytes(Double(compressedMemory)),
+            freeMemory: Utils.bytesToGigaBytes(Double(freeMemory)),
+            purgeableMemory: Utils.bytesToGigaBytes(Double(purgeableMemory)),
+            appUsedMemory: Utils.bytesToGigaBytes(Double(appUsedMemory))
         )
+
+        print("Memory result object:")
+        dump(resultInfo)
+
+        return resultInfo
     }
 
     func getAppMemoryUsage() -> UInt64 {
@@ -97,38 +103,7 @@ class MemoryInfoService {
 
         memoryUsageResult = UInt64(info.resident_size)
 
+        print("App memory usage is: \(memoryUsageResult) bytes")
         return memoryUsageResult
     }
-}
-
-struct MemoryInfo {
-    var totalPhysical: UInt64 = 0
-    var availablePhysical: UInt64 = 0
-    var usedPhysical: UInt64 = 0
-
-    var activeMemory: UInt64 = 0
-    var inactiveMemory: UInt64 = 0
-    var wiredMemory: UInt64 = 0
-    var compressedMemory: UInt64 = 0
-    var freeMemory: UInt64 = 0
-    var purgeableMemory: UInt64 = 0
-    var appUsedMemory: UInt64 = 0
-
-    var usagePercentege: Double {
-        guard totalPhysical > 0 else { return 0 }
-        return Double(usedPhysical) / Double(totalPhysical) * 100
-    }
-
-    var totalPhysicalFormatted: String { ByteCountFormatter.string(fromByteCount: Int64(totalPhysical), countStyle: .memory) }
-    var availablePhysicalFormatted: String { ByteCountFormatter.string(fromByteCount: Int64(availablePhysical), countStyle: .memory) }
-    var usedPhysicalFormatted: String { ByteCountFormatter.string(fromByteCount: Int64(usedPhysical), countStyle: .memory) }
-
-    var activeMemoryFormatted: String { ByteCountFormatter.string(fromByteCount: Int64(activeMemory), countStyle: .memory) }
-    var inactiveMemoryFormatted: String { ByteCountFormatter.string(fromByteCount: Int64(inactiveMemory), countStyle: .memory) }
-    var wiredMemoryFormatted: String { ByteCountFormatter.string(fromByteCount: Int64(wiredMemory), countStyle: .memory) }
-    var compressedMemoryFormatted: String { ByteCountFormatter.string(fromByteCount: Int64(compressedMemory), countStyle: .memory) }
-    var freeMemoryFormatted: String { ByteCountFormatter.string(fromByteCount: Int64(freeMemory), countStyle: .memory) }
-    var purgeableMemoryFormatted: String { ByteCountFormatter.string(fromByteCount: Int64(purgeableMemory), countStyle: .memory) }
-
-    var appUsedMemoryFormatted: String { ByteCountFormatter.string(fromByteCount: Int64(appUsedMemory), countStyle: .memory) }
 }

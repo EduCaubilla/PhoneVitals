@@ -14,34 +14,39 @@ public struct SystemDataProfileModel: Codable, Equatable {
     var thermalState: String
 
     var batteryLevel: Double
-    var batteryState: Int
+    var batteryState: String
 
-    var storageCapacity: Int
-    var storageUsed: Int
-    var storageAvailable: Int
-
-    var cpuUsage: Double
+    var storageCapacity: Double
+    var storageUsed: Double
+    var storageAvailable: Double
 
     var memoryUsage: Double
-    var memoryCapacity: Int
-    var memoryFree: Int
+    var memoryCapacity: Double
+    var memoryFree: Double
+
+    var cpuUsage: Double
 
     var timestamp: Date
 
     var overallHealth: String?
 
+    var memoryLevel: Double {
+        guard memoryCapacity > 0 else { return 0 }
+        return Double(memoryUsage) / Double(memoryCapacity) * 100
+    }
+
     init(
         id: UUID?,
         thermalState: String,
         batteryLevel: Double,
-        batteryState: Int,
-        storageCapacity: Int,
-        storageUsed: Int,
-        storageAvailable: Int,
-        cpuUsage: Double,
+        batteryState: String,
+        storageCapacity: Double,
+        storageUsed: Double,
+        storageAvailable: Double,
         memoryUsage: Double,
-        memoryCapacity: Int,
-        memoryFree: Int,
+        memoryCapacity: Double,
+        memoryFree: Double,
+        cpuUsage: Double,
         timestamp: Date
     ) {
         self.id = id
@@ -51,26 +56,26 @@ public struct SystemDataProfileModel: Codable, Equatable {
         self.storageCapacity = storageCapacity
         self.storageUsed = storageUsed
         self.storageAvailable = storageAvailable
-        self.cpuUsage = cpuUsage
         self.memoryUsage = memoryUsage
         self.memoryCapacity = memoryCapacity
         self.memoryFree = memoryFree
+        self.cpuUsage = cpuUsage
         self.timestamp = timestamp
     }
 
     func mapToDTO() -> SystemDataProfileDTO {
         return SystemDataProfileDTO(
             id: id,
-            thermalState: thermalState,
+            thermalState: ThermalStateGrade(rawValue: thermalState) ?? .fair,
             batteryLevel: batteryLevel,
-            batteryState: batteryState,
+            batteryState: UIDevice.BatteryState.mapFromStringToInt(batteryState),
             storageCapacity: storageCapacity,
             storageUsed: storageUsed,
             storageAvailable: storageAvailable,
-            cpuUsage: cpuUsage,
             memoryUsage: memoryUsage,
             memoryCapacity: memoryCapacity,
             memoryFree: memoryFree,
+            cpuUsage: cpuUsage,
             timestamp: timestamp
         )
     }

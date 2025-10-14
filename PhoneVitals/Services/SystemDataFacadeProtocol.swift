@@ -6,8 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 protocol SystemDataFacadeProtocol {
-    func getAllSystemData() -> SystemDataProfileModel
-    func getAllDeviceData() -> DeviceInfo
+    func getAllSystemData() async -> SystemDataProfileModel
+    func getAllDeviceData() async -> DeviceInfo
+
+    var systemDataPublisher: AnyPublisher<SystemDataProfileModel?, Never> { get }
+    var deviceDataPublisher: AnyPublisher<DeviceInfo, Never> { get }
+    var isLoadingPublisher: AnyPublisher<Bool, Never> { get }
 }

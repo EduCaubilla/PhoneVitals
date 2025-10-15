@@ -22,9 +22,11 @@ class MemoryInfoService {
     func startMonitoring(interval: TimeInterval = 1.0) {
         stopMonitoring()
 
-        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-            self?.updateMemoryData()
-            print("Completed Memory interval")
+        DispatchQueue.main.async { [weak self] in
+            self?.timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+                self?.updateMemoryData()
+                print("Completed Memory interval")
+            }
         }
     }
 
@@ -71,7 +73,7 @@ class MemoryInfoService {
 
         let appUsedMemory = getAppMemoryUsage()
 
-        let resultInfo = MemoryInfo(
+        let resultMemoryInfo = MemoryInfo(
             totalPhysical: Utils.bytesToGigaBytes(Double(totalPhysical)),
             availablePhysical: Utils.bytesToGigaBytes(Double(availablePhysical)),
             usedPhysical: Utils.bytesToGigaBytes(Double(usedPhysical)),
@@ -84,10 +86,9 @@ class MemoryInfoService {
             appUsedMemory: Utils.bytesToGigaBytes(Double(appUsedMemory))
         )
 
-        print("Memory result object:")
-        dump(resultInfo)
-
-        return resultInfo
+        print("Response Memory: ")
+        dump(resultMemoryInfo)
+        return resultMemoryInfo
     }
 
     func getAppMemoryUsage() -> UInt64 {

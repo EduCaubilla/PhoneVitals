@@ -24,7 +24,6 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     private let systemDataSubject = PassthroughSubject<SystemDataProfileModel?, Never>()
     private let deviceDataSubject = PassthroughSubject<DeviceInfo, Never>()
-    private let cpuDataSubject = PassthroughSubject<CPUInfo, Never>()
 
     private let loadingSubject = CurrentValueSubject<Bool, Never>(false)
 
@@ -35,10 +34,6 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     var deviceDataPublisher : AnyPublisher<DeviceInfo, Never> {
         deviceDataSubject.eraseToAnyPublisher()
-    }
-
-    var cpuDataPublisher : AnyPublisher<CPUInfo, Never> {
-        cpuDataSubject.eraseToAnyPublisher()
     }
 
     var isLoadingPublisher: AnyPublisher<Bool, Never> {
@@ -78,8 +73,14 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
         self.memoryData = memory?.getMemoryData()
 
         memory?.memoryInfoPublisher
-            .sink { info in
+            .sink { [weak self] info in
+                guard let self = self else { return }
                 self.memoryData = info
+
+                Task { @MainActor in
+                    let updatedData = await self.getAllSystemData()
+                    self.systemDataSubject.send(updatedData)
+                }
             }
             .store(in: &cancellables)
 
@@ -91,8 +92,14 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
         self.cpuData = cpu?.getCPUData()
 
         cpu?.cpuInfoPublisher
-            .sink { info in
+            .sink { [weak self] info in
+                guard let self = self else { return }
                 self.cpuData = info
+
+                Task { @MainActor in
+                    let updatedData = await self.getAllSystemData()
+                    self.systemDataSubject.send(updatedData)
+                }
             }
             .store(in: &cancellables)
 
@@ -105,20 +112,21 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
     }
 
     //MARK: - System data
+    @MainActor
     func getAllSystemData() async -> SystemDataProfileModel {
 
-        let thermalState = await getThermalState()
-        let batteryLevel = await getBatteryLevel()
-        let batteryState = await getBatteryState()
-        let storageCapacity = await getStorageCapacity()
-        let storageUsed = await getStorageUsed()
-        let storageAvailable = await getStorageAvailable()
-        let memoryUsage = await getMemoryUsage()
-        let memoryCapacity = await getMemoryCapacity()
-        let memoryFree = await getMemoryFree()
-        let cpuUsageUser = await getCpuUsageUser()
-        let cpuUsageSystem = await getCpuUsageSystem()
-        let cpuUsageInactive = await getCpuUsageInactive()
+        let thermalState = getThermalState()
+        let batteryLevel = getBatteryLevel()
+        let batteryState = getBatteryState()
+        let storageCapacity = getStorageCapacity()
+        let storageUsed = getStorageUsed()
+        let storageAvailable = getStorageAvailable()
+        let memoryUsage = getMemoryUsage()
+        let memoryCapacity = getMemoryCapacity()
+        let memoryFree = getMemoryFree()
+        let cpuUsageUser = getCpuUsageUser()
+        let cpuUsageSystem = getCpuUsageSystem()
+        let cpuUsageInactive = getCpuUsageInactive()
 
         return SystemDataProfileModel(
             id: nil,

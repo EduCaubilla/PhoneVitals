@@ -21,9 +21,11 @@ class CPUInfoService {
     func startMonitoring(interval: TimeInterval = 1) {
         stopMonitoring()
 
-        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-            self?.updateCPUData()
-            print("Completed CPU interval")
+        DispatchQueue.main.async { [weak self] in
+            self?.timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+                self?.updateCPUData()
+                print("Completed CPU interval")
+            }
         }
     }
 
@@ -42,7 +44,6 @@ class CPUInfoService {
     func getProcessorCount() -> (processorCount: Int, activeProcessorCount: Int) {
         let processorCount = ProcessInfo.processInfo.processorCount
         let activeProcessorCount = ProcessInfo.processInfo.activeProcessorCount
-        print("Processor Count: \(processorCount) | Active Processor Count: \(activeProcessorCount)")
         return (processorCount, activeProcessorCount)
     }
 
@@ -84,7 +85,7 @@ class CPUInfoService {
 
             let resultProcessor = getProcessorCount()
 
-            let response = CPUInfo(
+            let resultCPUInfo = CPUInfo(
                 totalProcessors: resultProcessor.0,
                 processorsUsed: resultProcessor.1,
                 systemCpu: Double(totalSystemTime) / totalTicks * 100,
@@ -94,8 +95,8 @@ class CPUInfoService {
             )
 
             print("Response CPU: ")
-            dump(response)
+            dump(resultCPUInfo)
 
-            return response
+            return resultCPUInfo
         }
 }

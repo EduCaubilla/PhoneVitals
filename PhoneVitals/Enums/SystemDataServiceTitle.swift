@@ -14,7 +14,7 @@ enum SystemDataServiceTitle: String, CaseIterable {
     case ramMemory = "RAM Memory"
     case processor = "Processor"
 
-    var id : String {
+    var displayName : String {
         return rawValue
     }
 }

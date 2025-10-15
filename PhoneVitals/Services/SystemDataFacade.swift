@@ -17,8 +17,12 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     private let device : DeviceInfoService
 
+    private let cpu : CPUInfoService?
+    private var cpuData : CPUInfo?
+
     private let systemDataSubject = PassthroughSubject<SystemDataProfileModel?, Never>()
     private let deviceDataSubject = PassthroughSubject<DeviceInfo, Never>()
+    private let cpuDataSubject = PassthroughSubject<CPUInfo, Never>()
 
     private let loadingSubject = CurrentValueSubject<Bool, Never>(false)
 
@@ -31,6 +35,10 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
         deviceDataSubject.eraseToAnyPublisher()
     }
 
+    var cpuDataPublisher : AnyPublisher<CPUInfo, Never> {
+        cpuDataSubject.eraseToAnyPublisher()
+    }
+
     var isLoadingPublisher: AnyPublisher<Bool, Never> {
         loadingSubject.eraseToAnyPublisher()
     }
@@ -39,18 +47,22 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     //MARK: - INITIALIZER
     init(memory: MemoryInfoService = MemoryInfoService(),
-         device: DeviceInfoService = DeviceInfoService()) {
+         device: DeviceInfoService = DeviceInfoService(),
+         cpu: CPUInfoService = CPUInfoService()) {
         self.memory = memory
         self.device = device
+        self.cpu = cpu
 
         Task {
             await fetchMemoryData()
+            await fetchCPUData()
         }
     }
 
     //MARK: - DEINITIALIZER
     deinit {
         memory?.stopMonitoring()
+        cpu?.stopMonitoring()
         cancellables.forEach { $0.cancel() }
     }
 
@@ -69,6 +81,19 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
         memory?.startMonitoring()
     }
 
+    //MARK: - CPU data monitor
+    func fetchCPUData() async {
+        self.cpuData = cpu?.getCPUData()
+
+        cpu?.cpuInfoPublisher
+            .sink { info in
+                self.cpuData = info
+            }
+            .store(in: &cancellables)
+
+        cpu?.startMonitoring()
+    }
+
     //MARK: - Device data
     func getAllDeviceData() async -> DeviceInfo {
         return device.getDeviceInfo()
@@ -83,10 +108,12 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
         let storageCapacity = await getStorageCapacity()
         let storageUsed = await getStorageUsed()
         let storageAvailable = await getStorageAvailable()
-        let cpuUsage = await getCpuUsage()
         let memoryUsage = await getMemoryUsage()
         let memoryCapacity = await getMemoryCapacity()
         let memoryFree = await getMemoryFree()
+        let cpuUsageUser = await getCpuUsageUser()
+        let cpuUsageSystem = await getCpuUsageSystem()
+        let cpuUsageInactive = await getCpuUsageInactive()
 
         return SystemDataProfileModel(
             id: nil,
@@ -99,7 +126,9 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
             memoryUsage: memoryUsage,
             memoryCapacity: memoryCapacity,
             memoryFree: memoryFree,
-            cpuUsage: cpuUsage,
+            cpuUsageUser: cpuUsageUser,
+            cpuUsageSystem: cpuUsageSystem,
+            cpuUsageInactive: cpuUsageInactive,
             timestamp: Date.now
         )
     }
@@ -172,42 +201,20 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
     }
 
     @MainActor
-    private func getCpuUsage() -> Double {
-        var cpuUsage: Double = 0.0
-        var threadsList = UnsafeMutablePointer(mutating: [thread_act_t]())
-        var threadsCount = mach_msg_type_number_t(0)
+    func getCpuUsageUser() -> Double {
+        let result = cpuData?.userCpu ?? 0
+        return result
+    }
 
-        let threadsResult = withUnsafeMutablePointer(to: &threadsList) {
-            return $0.withMemoryRebound(to: thread_act_array_t?.self, capacity: 1) {
-                task_threads(mach_task_self_, $0, &threadsCount)
-            }
-        }
+    @MainActor
+    func getCpuUsageSystem() -> Double {
+        let result = cpuData?.systemCpu ?? 0
+        return result
+    }
 
-        guard threadsResult == KERN_SUCCESS else {
-            return 0.0
-        }
-
-        for index in 0..<Int(threadsCount) {
-            var threadInfo = thread_basic_info()
-            var threadInfoCount = mach_msg_type_number_t(THREAD_INFO_MAX)
-
-            let infoResult = withUnsafeMutablePointer(to: &threadInfo) {
-                $0.withMemoryRebound(to: integer_t.self, capacity: 1) {
-                    thread_info(threadsList[Int(index)], thread_flavor_t(THREAD_BASIC_INFO), $0, &threadInfoCount)
-                }
-            }
-
-            guard infoResult == KERN_SUCCESS else { break }
-
-//            let threadBasicInfo = threadInfo as thread_basic_info
-            let threadBasicInfo = threadInfo
-            if threadBasicInfo.flags & TH_FLAGS_IDLE == 0 {
-                cpuUsage += Double(threadBasicInfo.cpu_usage) / Double(TH_USAGE_SCALE) * 100.0
-            }
-        }
-
-        vm_deallocate(mach_task_self_, vm_address_t(UInt(bitPattern: threadsList)), vm_size_t(Int(threadsCount) * MemoryLayout<thread_t>.stride))
-
-        return cpuUsage
+    @MainActor
+    func getCpuUsageInactive() -> Double {
+        let result = cpuData?.idleCpu ?? 0
+        return result
     }
 }

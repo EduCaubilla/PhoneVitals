@@ -43,7 +43,7 @@ struct HistorySystemDataView: View {
                                     ], spacing: 10) {
                                         ForEach(0..<5) { index in
                                             StateLinearIconBadge(
-                                                title: SystemDataServiceTitle.allCases[index].rawValue,
+                                                title: SystemDataServiceTitle.allCases[index],
                                                 titleFont: .caption,
                                                 subtitle: "Good",
                                                 value: "",

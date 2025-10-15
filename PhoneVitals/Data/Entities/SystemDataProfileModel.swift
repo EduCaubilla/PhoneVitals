@@ -24,7 +24,9 @@ public struct SystemDataProfileModel: Codable, Equatable {
     var memoryCapacity: Double
     var memoryFree: Double
 
-    var cpuUsage: Double
+    var cpuUsageUser: Double
+    var cpuUsageSystem: Double
+    var cpuUsageInactive: Double
 
     var timestamp: Date
 
@@ -46,7 +48,9 @@ public struct SystemDataProfileModel: Codable, Equatable {
         memoryUsage: Double,
         memoryCapacity: Double,
         memoryFree: Double,
-        cpuUsage: Double,
+        cpuUsageUser: Double,
+        cpuUsageSystem: Double,
+        cpuUsageInactive: Double,
         timestamp: Date
     ) {
         self.id = id
@@ -59,7 +63,9 @@ public struct SystemDataProfileModel: Codable, Equatable {
         self.memoryUsage = memoryUsage
         self.memoryCapacity = memoryCapacity
         self.memoryFree = memoryFree
-        self.cpuUsage = cpuUsage
+        self.cpuUsageUser = cpuUsageUser
+        self.cpuUsageSystem = cpuUsageSystem
+        self.cpuUsageInactive = cpuUsageInactive
         self.timestamp = timestamp
     }
 
@@ -75,7 +81,9 @@ public struct SystemDataProfileModel: Codable, Equatable {
             memoryUsage: memoryUsage,
             memoryCapacity: memoryCapacity,
             memoryFree: memoryFree,
-            cpuUsage: cpuUsage,
+            cpuUsageUser: cpuUsageUser,
+            cpuUsageSystem: cpuUsageSystem,
+            cpuUsageInactive: cpuUsageInactive,
             timestamp: timestamp
         )
     }

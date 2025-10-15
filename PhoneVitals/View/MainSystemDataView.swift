@@ -71,7 +71,7 @@ struct MainSystemDataView: View {
                             ], spacing: 0) {
                                 ForEach(0..<5) { index in
                                     StateLinearIconBadge(
-                                        title: SystemDataServiceTitle.allCases[index].rawValue,
+                                        title: SystemDataServiceTitle.allCases[index],
                                         titleFont: .callout,
                                         value: "Good",
                                         lineLevel: 80.0,
@@ -123,7 +123,7 @@ struct MainSystemDataView: View {
                                         //MARK: - Section Thermal State
                                         VStack(alignment: .center) {
                                             StateLinearIconBadge(
-                                                title: "Thermal State",
+                                                title: .thermalState,
                                                 titleFont: .headline,
                                                 value: systemData.thermalState,
                                                 lineLevel: ThermalStateGrade.mapFromDisplayValueToLevel(systemData.thermalState),
@@ -135,14 +135,14 @@ struct MainSystemDataView: View {
                                         //MARK: - Section Battery
                                         VStack(alignment: .center) {
                                             StateLinearIconBadge(
-                                                title: "Battery",
+                                                title: .battery,
                                                 titleFont: .headline,
                                                 value: "\(String(format: "%.1f", Double(systemData.batteryLevel) * 100)) %",
                                                 lineLevel: Double(round(systemData.batteryLevel * 100) / 100) * 100,
                                                 lineThickness: 7,
                                                 textAlignment: .center
                                             )
-                                            Text("State - \(systemData.batteryState)")
+                                            Text("\(systemData.batteryState)")
                                                 .foregroundStyle(.secondary)
                                                 .font(.footnote)
                                         }
@@ -154,7 +154,7 @@ struct MainSystemDataView: View {
                                         //MARK: - Section Storage
                                         VStack(alignment: .center) {
                                             StateLinearIconBadge(
-                                                title: "Storage",
+                                                title: .storage,
                                                 titleFont: .headline,
                                                 value: "",
                                                 lineLevel: (systemData.storageUsed / systemData.storageCapacity * 100),
@@ -176,7 +176,7 @@ struct MainSystemDataView: View {
                                         //MARK: - Section RAM Memory
                                         VStack(alignment: .center) {
                                             StateLinearIconBadge(
-                                                title: "RAM Memory",
+                                                title: .ramMemory,
                                                 titleFont: .headline,
                                                 value: "",
                                                 lineLevel: systemData.memoryLevel,
@@ -202,22 +202,22 @@ struct MainSystemDataView: View {
                                         //MARK: - Section Processor
                                         VStack(alignment: .center) {
                                             StateLinearIconBadge(
-                                                title: "Processor",
+                                                title: .processor,
                                                 titleFont: .headline,
                                                 value: "",
-                                                lineLevel: systemData.cpuUsage,
+                                                lineLevel: ((systemData.cpuUsageUser + systemData.cpuUsageSystem) / systemData.storageCapacity * 100),
                                                 lineThickness: 7,
                                                 textAlignment: .center
                                             )
 
                                             VStack {
-                                                Text("User - 2.50%")
+                                                Text("User - \(String(format: "%.2f", systemData.cpuUsageUser))%")
                                                     .foregroundStyle(.secondary)
                                                     .font(.footnote)
-                                                Text("System - 3.17%")
+                                                Text("System - \(String(format: "%.2f", systemData.cpuUsageSystem))%")
                                                     .foregroundStyle(.secondary)
                                                     .font(.footnote)
-                                                Text("Inactive - 94.23%")
+                                                Text("Inactive - \(String(format: "%.2f", systemData.cpuUsageInactive))%")
                                                     .foregroundStyle(.secondary)
                                                     .font(.footnote)
                                             }

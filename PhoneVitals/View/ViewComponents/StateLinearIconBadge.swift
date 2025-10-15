@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StateLinearIconBadge: View {
     //MARK: - PROPERTIES
-    let title: String
+    let title: SystemDataServiceTitle
     var titleFont : Font = .headline
     var subtitle: String = ""
     let value: String
@@ -17,17 +17,20 @@ struct StateLinearIconBadge: View {
     var lineThickness: CGFloat = 10.0
     var textAlignment: HorizontalAlignment = .leading
 
-    private var lineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .green], startPoint: .trailing, endPoint: .leading) }
-    private var batteryLineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .green], startPoint: .leading, endPoint: .trailing) }
+    var reverseGradientList: [SystemDataServiceTitle] = [.battery, .thermalState]
+    var fontRegularList: [Font] = [.body, .subheadline, .callout, .footnote, .caption]
 
-    private var isBatteryGradient: Bool { title == "Battery" }
-    private var isFontRegular:  Bool  { titleFont == .body || titleFont == .subheadline || titleFont == .callout || titleFont == .footnote || titleFont == .caption }
+    private var lineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .green], startPoint: .trailing, endPoint: .leading) }
+    private var reverseLineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .green], startPoint: .leading, endPoint: .trailing) }
+
+    private var isReverseGradient: Bool { reverseGradientList.contains(title) }
+    private var isFontRegular:  Bool  { fontRegularList.contains(titleFont) }
 
     //MARK: - BODY
     var body: some View {
         VStack(alignment: textAlignment) {
             HStack {
-                Text(title)
+                Text(title.displayName)
                     .font(titleFont)
                     .fontWeight(isFontRegular ? .regular : .medium)
                     .foregroundColor(.primary)
@@ -46,7 +49,7 @@ struct StateLinearIconBadge: View {
                 .gaugeStyle(
                     ThickLinearGaugeStyle(
                         thickness: lineThickness,
-                        lineColor: isBatteryGradient ? batteryLineGradient : lineGradient
+                        lineColor: isReverseGradient ? reverseLineGradient : lineGradient
                     )
                 )
 
@@ -62,5 +65,5 @@ struct StateLinearIconBadge: View {
 
 //MARK: - PREVIEW
 #Preview {
-    StateLinearIconBadge(title: "Title", titleFont: .footnote, subtitle: "Good", value: "", lineLevel: 50.0, lineThickness: 10.0, textAlignment: .center)
+    StateLinearIconBadge(title: .battery, titleFont: .footnote, subtitle: "Good", value: "", lineLevel: 50.0, lineThickness: 10.0, textAlignment: .center)
 }

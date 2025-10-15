@@ -17,11 +17,14 @@ class MemoryInfoService {
     let memoryInfoPublisher = PassthroughSubject<MemoryInfo, Never>()
 
     //MARK: - FUNCTIONS
+
+    //MARK: - Monitoring process
     func startMonitoring(interval: TimeInterval = 1.0) {
         stopMonitoring()
 
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             self?.updateMemoryData()
+            print("Completed Memory interval")
         }
     }
 
@@ -33,8 +36,10 @@ class MemoryInfoService {
     func updateMemoryData() {
         guard let memoryInfo = getMemoryData() else { return }
         memoryInfoPublisher.send(memoryInfo)
+        print("Update Memory data")
     }
 
+    //MARK: - Get data
     func getMemoryData() -> MemoryInfo? {
         var stats = vm_statistics64()
         var count = mach_msg_type_number_t(MemoryLayout<vm_statistics64>.size / MemoryLayout<integer_t>.size )

@@ -25,7 +25,9 @@ final class SystemDataProfileDTO {
     var memoryCapacity: Double
     var memoryFree: Double
 
-    var cpuUsage: Double
+    var cpuUsageUser: Double
+    var cpuUsageSystem: Double
+    var cpuUsageInactive: Double
 
     var timestamp: Date
 
@@ -42,7 +44,9 @@ final class SystemDataProfileDTO {
         memoryUsage: Double,
         memoryCapacity: Double,
         memoryFree: Double,
-        cpuUsage: Double,
+        cpuUsageUser: Double,
+        cpuUsageSystem: Double,
+        cpuUsageInactive: Double,
         timestamp: Date
     ) {
         self.id = id ?? UUID()
@@ -55,7 +59,9 @@ final class SystemDataProfileDTO {
         self.memoryUsage = memoryUsage
         self.memoryCapacity = memoryCapacity
         self.memoryFree = memoryFree
-        self.cpuUsage = cpuUsage
+        self.cpuUsageUser = cpuUsageUser
+        self.cpuUsageSystem = cpuUsageSystem
+        self.cpuUsageInactive = cpuUsageInactive
         self.timestamp = timestamp
     }
 
@@ -71,7 +77,9 @@ final class SystemDataProfileDTO {
             memoryUsage: memoryUsage,
             memoryCapacity: memoryCapacity,
             memoryFree: memoryFree,
-            cpuUsage: cpuUsage,
+            cpuUsageUser: cpuUsageUser,
+            cpuUsageSystem: cpuUsageSystem,
+            cpuUsageInactive: cpuUsageInactive,
             timestamp: timestamp
             )
     }

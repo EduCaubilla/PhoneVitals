@@ -12,6 +12,8 @@ import Combine
 class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     //MARK: - PROPERTIES
+    private let storage : StorageInfoService?
+
     private let memory : MemoryInfoService?
     private var memoryData : MemoryInfo?
 
@@ -48,7 +50,10 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
     //MARK: - INITIALIZER
     init(memory: MemoryInfoService = MemoryInfoService(),
          device: DeviceInfoService = DeviceInfoService(),
-         cpu: CPUInfoService = CPUInfoService()) {
+         cpu: CPUInfoService = CPUInfoService(),
+         storage: StorageInfoService = StorageInfoService()
+    ) {
+        self.storage = storage
         self.memory = memory
         self.device = device
         self.cpu = cpu
@@ -155,31 +160,17 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     @MainActor
     private func getStorageCapacity() -> Double {
-        let fileManager = FileManager.default
-        let attributes = try! fileManager.attributesOfFileSystem(forPath: NSHomeDirectory())
-        let capacity = attributes[FileAttributeKey.systemSize] as! Double
-        let capacityResult = Utils.bytesToGigaBytes(capacity)
-        return capacityResult
+        return storage?.getStorageInfo()?.totalCapacity ?? 0
     }
 
     @MainActor
     private func getStorageUsed() -> Double {
-        let fileManager = FileManager.default
-        let attributes = try! fileManager.attributesOfFileSystem(forPath: NSHomeDirectory())
-        let capacity = attributes[FileAttributeKey.systemSize] as! Double
-        let freeSize = attributes[FileAttributeKey.systemFreeSize] as! Double
-        let usage = capacity - freeSize
-        let usageResult = Utils.bytesToGigaBytes(usage)
-        return usageResult
+        return storage?.getStorageInfo()?.usedCapacity ?? 0
     }
 
     @MainActor
     private func getStorageAvailable() -> Double {
-        let fileManager = FileManager.default
-        let attributes = try! fileManager.attributesOfFileSystem(forPath: NSHomeDirectory())
-        let freeSize = attributes[FileAttributeKey.systemFreeSize] as! Double
-        let freeSizeResult = Utils.bytesToGigaBytes(freeSize)
-        return freeSizeResult
+        return storage?.getStorageInfo()?.availableCapacity ?? 0
     }
 
     @MainActor

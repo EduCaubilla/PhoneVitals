@@ -26,7 +26,7 @@ class DeviceInfoService {
     }
 
     //MARK: - FUNCTIONS
-    public func getDeviceInfo() -> DeviceInfo {
+    func getDeviceInfo() -> DeviceInfo {
         return deviceInfo
     }
 }

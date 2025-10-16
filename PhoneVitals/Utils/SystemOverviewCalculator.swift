@@ -32,7 +32,7 @@ class SystemOverviewCalculator {
 
         let overallScore = (
             thermalScore * weights[.thermalState]! +
-            batteryScore * weights[.battery]! +
+            (100 - batteryScore) * weights[.battery]! + // We are calculating in 0-100 level so is the inverse to batt percentage.
             storageScore * weights[.storage]! +
             memoryScore * weights[.ramMemory]! +
             cpuScore * weights[.processor]!
@@ -57,8 +57,8 @@ class SystemOverviewCalculator {
         return {
             switch thermalState.lowercased() {
                 case "nominal": return 10
-                case "fair": return 50
-                case "serious": return 75
+                case "fair": return 40
+                case "serious": return 70
                 case "critical": return 100
                 default: return 50
             }
@@ -115,9 +115,9 @@ class SystemOverviewCalculator {
     func getOverallInvertedScoreLabel(score: Double) -> String {
         switch score {
             case 0..<25:
-                return "Excellent"
+                return "Superb"
             case 25..<40:
-                return "Very Good"
+                return "Great"
             case 40..<60:
                 return "Good"
             case 60..<75:
@@ -134,14 +134,16 @@ class SystemOverviewCalculator {
     func getOverallScoreColor(score: Double) -> Color {
         switch score {
             case 0..<25:
-                return .green
+                return .pvDarkGreen
             case 25..<40:
-                return .yellow
+                return .green
             case 40..<60:
-                return .orange
+                return .darkYellow
             case 60..<75:
-                return .red
+                return .orange
             case 75..<100:
+                return .red
+            case 90..<100:
                 return .darkRed
             default:
                 return .pvDarkGreen

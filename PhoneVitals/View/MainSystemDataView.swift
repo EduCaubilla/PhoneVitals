@@ -87,6 +87,7 @@ struct MainSystemDataView: View {
                                 .frame(minWidth: 100, idealWidth: 200, maxWidth: 250, alignment: .top)
                             } //: LAZYHGRID - Overview data
                             .frame(maxWidth: .infinity, maxHeight: 280, alignment: .center)
+                            .padding(.top)
 
                             Divider()
                                 .padding(10)

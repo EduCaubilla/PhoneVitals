@@ -16,14 +16,15 @@ struct StateRoundIcon: View {
     var body: some View {
         Gauge(value: score, in: 0...100) {
             Label("Overall state", image: "phoneLoupeIcon")
-                .fontWeight(.ultraLight)
+                .fontWeight(.light)
                 .foregroundStyle(.pvDarkGreen)
-                .padding(.top, 2)
-                .scaleEffect(1.3)
+                .padding(.top, 4)
+                .scaleEffect(1.4)
         } currentValueLabel: {
             Text(label)
+                .fontWeight(.medium)
                 .foregroundColor(color)
-                .padding(6)
+                .padding(5)
         }
         .tint(stateGradient)
         .gaugeStyle(.accessoryCircular)
@@ -31,5 +32,5 @@ struct StateRoundIcon: View {
 }
 
 #Preview {
-    StateRoundIcon(score: 50.0, label: "Fair", color: .yellow)
+    StateRoundIcon(score: 50.0, label: "Good", color: .darkYellow)
 }

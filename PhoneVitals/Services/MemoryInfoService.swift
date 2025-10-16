@@ -11,7 +11,7 @@ import Combine
 
 class MemoryInfoService {
     //MARK: - PROPERTIES
-    private var timer: Timer?
+    private weak var timer: Timer?
     private var cancellables = Set<AnyCancellable>()
 
     let memoryInfoPublisher = PassthroughSubject<MemoryInfo, Never>()
@@ -25,7 +25,6 @@ class MemoryInfoService {
         DispatchQueue.main.async { [weak self] in
             self?.timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
                 self?.updateMemoryData()
-                print("Completed Memory interval")
             }
         }
     }
@@ -38,7 +37,6 @@ class MemoryInfoService {
     func updateMemoryData() {
         guard let memoryInfo = getMemoryData() else { return }
         memoryInfoPublisher.send(memoryInfo)
-        print("Update Memory data")
     }
 
     //MARK: - Get data
@@ -74,20 +72,18 @@ class MemoryInfoService {
         let appUsedMemory = getAppMemoryUsage()
 
         let resultMemoryInfo = MemoryInfo(
-            totalPhysical: Utils.bytesToGigaBytes(Double(totalPhysical)),
-            availablePhysical: Utils.bytesToGigaBytes(Double(availablePhysical)),
-            usedPhysical: Utils.bytesToGigaBytes(Double(usedPhysical)),
-            activeMemory: Utils.bytesToGigaBytes(Double(activeMemory)),
-            inactiveMemory: Utils.bytesToGigaBytes(Double(inactiveMemory)),
-            wiredMemory: Utils.bytesToGigaBytes(Double(wiredMemory)),
-            compressedMemory: Utils.bytesToGigaBytes(Double(compressedMemory)),
-            freeMemory: Utils.bytesToGigaBytes(Double(freeMemory)),
-            purgeableMemory: Utils.bytesToGigaBytes(Double(purgeableMemory)),
-            appUsedMemory: Utils.bytesToGigaBytes(Double(appUsedMemory))
+            totalPhysical: Tools.bytesToGigaBytes(Double(totalPhysical)),
+            availablePhysical: Tools.bytesToGigaBytes(Double(availablePhysical)),
+            usedPhysical: Tools.bytesToGigaBytes(Double(usedPhysical)),
+            activeMemory: Tools.bytesToGigaBytes(Double(activeMemory)),
+            inactiveMemory: Tools.bytesToGigaBytes(Double(inactiveMemory)),
+            wiredMemory: Tools.bytesToGigaBytes(Double(wiredMemory)),
+            compressedMemory: Tools.bytesToGigaBytes(Double(compressedMemory)),
+            freeMemory: Tools.bytesToGigaBytes(Double(freeMemory)),
+            purgeableMemory: Tools.bytesToGigaBytes(Double(purgeableMemory)),
+            appUsedMemory: Tools.bytesToGigaBytes(Double(appUsedMemory))
         )
 
-        print("Response Memory: ")
-        dump(resultMemoryInfo)
         return resultMemoryInfo
     }
 
@@ -109,7 +105,6 @@ class MemoryInfoService {
 
         memoryUsageResult = UInt64(info.resident_size)
 
-        print("App memory usage is: \(memoryUsageResult) bytes")
         return memoryUsageResult
     }
 }

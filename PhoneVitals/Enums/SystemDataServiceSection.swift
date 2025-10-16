@@ -7,12 +7,12 @@
 
 import Foundation
 
-enum SystemDataServiceTitle: String, CaseIterable {
+enum SystemDataServiceSection: String, CaseIterable {
     case thermalState = "Thermal State"
     case battery = "Battery"
     case storage = "Storage"
     case ramMemory = "RAM Memory"
-    case processor = "Processor"
+    case processor = "CPU Processor"
 
     var displayName : String {
         return rawValue

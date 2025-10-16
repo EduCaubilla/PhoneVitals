@@ -23,12 +23,12 @@ class StorageInfoService {
 
         let totalCapacity = attributes[FileAttributeKey.systemSize] as! Double
         let availableCapacity = attributes[FileAttributeKey.systemFreeSize] as! Double
-        let usedCapacity = totalCapacity - availableCapacity
+        let usedCapacity = Double(totalCapacity - availableCapacity)
 
         return StorageInfo(
-            totalCapacity: Utils.bytesToGigaBytes(totalCapacity),
-            usedCapacity: Utils.bytesToGigaBytes(usedCapacity),
-            availableCapacity: Utils.bytesToGigaBytes(availableCapacity)
+            totalCapacity: Tools.bytesToGigaBytes(totalCapacity),
+            availableCapacity: Tools.bytesToGigaBytes(availableCapacity),
+            usedCapacity: Tools.bytesToGigaBytes(usedCapacity)
         )
     }
 

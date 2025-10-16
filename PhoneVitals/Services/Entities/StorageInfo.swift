@@ -7,6 +7,6 @@
 
 struct StorageInfo {
     var totalCapacity: Double
-    var usedCapacity: Double
     var availableCapacity: Double
+    var usedCapacity: Double
 }

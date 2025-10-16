@@ -8,20 +8,21 @@
 import SwiftUI
 
 struct StateRoundIcon: View {
-    let currentOverviewValue: Double
-    let currentOverviewTip: String
-    let stateGradient: Gradient = Gradient(colors: [.red, .orange, .green])
+    let score: Double
+    let label: String
+    let color: Color
+    let stateGradient: Gradient = Gradient(colors: [.pvGreen, .green, .yellow, .orange, .red, .darkRed])
 
     var body: some View {
-        Gauge(value: currentOverviewValue, in: 0...100) {
+        Gauge(value: score, in: 0...100) {
             Label("Overall state", image: "phoneLoupeIcon")
                 .fontWeight(.ultraLight)
                 .foregroundStyle(.pvDarkGreen)
-                .padding(.top, 5)
+                .padding(.top, 2)
                 .scaleEffect(1.3)
         } currentValueLabel: {
-            Text(currentOverviewTip)
-                .foregroundColor(.green)
+            Text(label)
+                .foregroundColor(color)
                 .padding(6)
         }
         .tint(stateGradient)
@@ -30,5 +31,5 @@ struct StateRoundIcon: View {
 }
 
 #Preview {
-    StateRoundIcon(currentOverviewValue: 50.0, currentOverviewTip: "Fair")
+    StateRoundIcon(score: 50.0, label: "Fair", color: .yellow)
 }

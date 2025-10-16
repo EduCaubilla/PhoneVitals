@@ -33,7 +33,9 @@ struct HistorySystemDataView: View {
                                     .foregroundStyle(.secondary)
 
                                 HStack(alignment: .center, spacing: 5) {
-                                    StateRoundIcon(currentOverviewValue: 50.0, currentOverviewTip: "Fair")
+                                    StateRoundIcon(
+                                        score: 50.0, label: "Fair", color: .yellow
+                                    )
                                         .padding(.leading, 10)
 
                                     LazyHGrid(rows: [
@@ -43,10 +45,10 @@ struct HistorySystemDataView: View {
                                     ], spacing: 10) {
                                         ForEach(0..<5) { index in
                                             StateLinearIconBadge(
-                                                title: SystemDataServiceTitle.allCases[index],
+                                                title: SystemDataServiceSection.allCases[index],
                                                 titleFont: .caption,
                                                 subtitle: "Good",
-                                                value: "",
+                                                label: "",
                                                 lineLevel: Double.random(in: 0..<100),
                                                 lineThickness: 5.0,
                                                 textAlignment: .leading

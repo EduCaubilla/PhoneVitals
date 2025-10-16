@@ -14,9 +14,6 @@ struct MainSystemDataView: View {
 
     @StateObject var viewModel : MainSystemDataViewModel
 
-    @State private var currentOverviewTip: String = "Good"
-    @State private var currentOverviewValue: Double = 80.0
-
     //MARK: - INITIALIZER
     init(viewModel: MainSystemDataViewModel = MainSystemDataViewModel()) {
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(Color.pvDarkGreen)]
@@ -50,12 +47,17 @@ struct MainSystemDataView: View {
                                     .foregroundStyle(.primary.opacity(0.5))
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.top, -8)
+                                    .padding(.leading, 10)
 
                                 /// Overview Icon
                                 HStack(alignment: .top, spacing: 5) {
                                     Spacer()
 
-                                    StateRoundIcon(currentOverviewValue: currentOverviewValue, currentOverviewTip: currentOverviewTip)
+                                    StateRoundIcon(
+                                        score: viewModel.overviewData?.overallHealthScore ?? 50.0,
+                                        label: viewModel.overviewData?.overallHealthLabel ?? "Fair",
+                                        color: viewModel.overviewData?.overallHealthColor ?? .yellow
+                                    )
                                         .scaleEffect(2)
                                         .frame(width: 125, height: 125, alignment: .center)
 
@@ -65,16 +67,18 @@ struct MainSystemDataView: View {
 
                             /// Overview Data
                             LazyHGrid(rows: [
-                                GridItem(.fixed(70)),
-                                GridItem(.fixed(70)),
-                                GridItem(.fixed(70))
-                            ], spacing: 0) {
+                                GridItem(.flexible(minimum: 70, maximum: 100)),
+                                GridItem(.flexible(minimum: 70, maximum: 100)),
+                                GridItem(.flexible(minimum: 70, maximum: 100))
+                            ], spacing: 5) {
                                 ForEach(0..<5) { index in
+                                    let currentSection = SystemDataServiceSection.allCases[index]
+
                                     StateLinearIconBadge(
-                                        title: SystemDataServiceTitle.allCases[index],
+                                        title: currentSection,
                                         titleFont: .callout,
-                                        value: "Good",
-                                        lineLevel: 80.0,
+                                        label: viewModel.getOverviewLabelFor(currentSection),
+                                        lineLevel: viewModel.getOverviewValueFor(currentSection),
                                         lineThickness: 10.0,
                                         textAlignment: .leading
                                     )
@@ -93,26 +97,20 @@ struct MainSystemDataView: View {
                                     .font(.headline)
                                     .fontWeight(.medium)
                                     .foregroundColor(.primary)
+                                    .padding(.top, 5)
+                                    .padding(.bottom, 3)
 
-                                Grid(alignment: .top, verticalSpacing: 10) {
-                                    GridRow {
-                                        Text(viewModel.deviceData?.modelName ?? "Unknown") // Model Name
-                                            .foregroundColor(.secondary)
-                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                                        Text(viewModel.deviceData?.modelIdentifier ?? "Unknown") // Model Identifier
-                                            .foregroundColor(.secondary)
-                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    }
+                                VStack {
+                                    Text(String(format: "%@ (%@)", viewModel.deviceData?.modelName ?? "Unknown", viewModel.deviceData?.modelIdentifier ?? "Unknown")) // Model Name (Model Identifier)
+                                        .foregroundColor(.secondary)
 
                                     Text(viewModel.deviceData?.deviceSystemVersion ?? "Unknown") // System Version
                                         .foregroundColor(.secondary)
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                } //: GRID
-                                .padding(.top, 0)
+                                        .padding(.bottom, 5)
+                                } //: VSTACK
                             } //: VSTACK
-                            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .center)
-                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity, maxHeight: 120, alignment: .center)
+                            .padding(.vertical, 5)
 
                             //MARK: - Additional Information
                             VStack(alignment: .center, spacing: 0) {
@@ -125,7 +123,7 @@ struct MainSystemDataView: View {
                                             StateLinearIconBadge(
                                                 title: .thermalState,
                                                 titleFont: .headline,
-                                                value: systemData.thermalState,
+                                                label: systemData.thermalState,
                                                 lineLevel: ThermalStateGrade.mapFromDisplayValueToLevel(systemData.thermalState),
                                                 lineThickness: 7,
                                                 textAlignment: .center
@@ -137,14 +135,16 @@ struct MainSystemDataView: View {
                                             StateLinearIconBadge(
                                                 title: .battery,
                                                 titleFont: .headline,
-                                                value: "\(String(format: "%.1f", Double(systemData.batteryLevel) * 100)) %",
+                                                label: "\(String(format: "%.1f", Double(systemData.batteryLevel) * 100)) %",
                                                 lineLevel: Double(round(systemData.batteryLevel * 100) / 100) * 100,
                                                 lineThickness: 7,
                                                 textAlignment: .center
                                             )
+
                                             Text("\(systemData.batteryState)")
                                                 .foregroundStyle(.secondary)
                                                 .font(.footnote)
+                                                .padding(.top, -10)
                                         }
                                     } //: ROW 1
                                     .padding(.bottom, 5)
@@ -156,7 +156,7 @@ struct MainSystemDataView: View {
                                             StateLinearIconBadge(
                                                 title: .storage,
                                                 titleFont: .headline,
-                                                value: "",
+                                                label: "",
                                                 lineLevel: (systemData.storageUsed / systemData.storageCapacity * 100),
                                                 lineThickness: 7,
                                                 textAlignment: .center
@@ -178,7 +178,7 @@ struct MainSystemDataView: View {
                                             StateLinearIconBadge(
                                                 title: .ramMemory,
                                                 titleFont: .headline,
-                                                value: "",
+                                                label: "",
                                                 lineLevel: systemData.memoryLevel,
                                                 lineThickness: 7,
                                                 textAlignment: .center
@@ -204,7 +204,7 @@ struct MainSystemDataView: View {
                                             StateLinearIconBadge(
                                                 title: .processor,
                                                 titleFont: .headline,
-                                                value: "",
+                                                label: "",
                                                 lineLevel: ((systemData.cpuUsageUser + systemData.cpuUsageSystem) / systemData.storageCapacity * 100),
                                                 lineThickness: 7,
                                                 textAlignment: .center

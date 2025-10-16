@@ -78,8 +78,10 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
                 self.memoryData = info
 
                 Task { @MainActor in
+                    self.loadingSubject.send(true)
                     let updatedData = await self.getAllSystemData()
                     self.systemDataSubject.send(updatedData)
+                    self.loadingSubject.send(false)
                 }
             }
             .store(in: &cancellables)
@@ -97,8 +99,10 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
                 self.cpuData = info
 
                 Task { @MainActor in
+                    self.loadingSubject.send(true)
                     let updatedData = await self.getAllSystemData()
                     self.systemDataSubject.send(updatedData)
+                    self.loadingSubject.send(false)
                 }
             }
             .store(in: &cancellables)

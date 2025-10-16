@@ -24,7 +24,6 @@ class CPUInfoService {
         DispatchQueue.main.async { [weak self] in
             self?.timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
                 self?.updateCPUData()
-                print("Completed CPU interval")
             }
         }
     }
@@ -37,7 +36,6 @@ class CPUInfoService {
     func updateCPUData() {
         guard let cpuInfo = getCPUData() else { return }
         cpuInfoPublisher.send(cpuInfo)
-        print("Update CPU data")
     }
 
     //MARK: - Get data
@@ -93,9 +91,6 @@ class CPUInfoService {
                 idleCpu: Double(totalIdleTime) / totalTicks * 100,
                 niceCpu: Double(totalNiceTime) / totalTicks * 100
             )
-
-            print("Response CPU: ")
-            dump(resultCPUInfo)
 
             return resultCPUInfo
         }

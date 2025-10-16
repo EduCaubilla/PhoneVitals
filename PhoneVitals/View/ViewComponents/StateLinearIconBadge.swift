@@ -9,19 +9,19 @@ import SwiftUI
 
 struct StateLinearIconBadge: View {
     //MARK: - PROPERTIES
-    let title: SystemDataServiceTitle
+    let title: SystemDataServiceSection
     var titleFont : Font = .headline
     var subtitle: String = ""
-    let value: String
+    let label: String
     var lineLevel: CGFloat = 0.5
     var lineThickness: CGFloat = 10.0
     var textAlignment: HorizontalAlignment = .leading
 
-    var reverseGradientList: [SystemDataServiceTitle] = [.battery, .thermalState]
+    var reverseGradientList: [SystemDataServiceSection] = [.battery]
     var fontRegularList: [Font] = [.body, .subheadline, .callout, .footnote, .caption]
 
-    private var lineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .green], startPoint: .trailing, endPoint: .leading) }
-    private var reverseLineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .green], startPoint: .leading, endPoint: .trailing) }
+    private var lineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .yellow, .green, .pvGreen], startPoint: .trailing, endPoint: .leading) }
+    private var reverseLineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .yellow, .green, .pvGreen], startPoint: .leading, endPoint: .trailing) }
 
     private var isReverseGradient: Bool { reverseGradientList.contains(title) }
     private var isFontRegular:  Bool  { fontRegularList.contains(titleFont) }
@@ -42,7 +42,7 @@ struct StateLinearIconBadge: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-            }
+            } //: HSTACK
             .padding(.bottom, -2)
 
             Gauge(value: lineLevel, in: 0.0...100.0) {}
@@ -53,17 +53,18 @@ struct StateLinearIconBadge: View {
                     )
                 )
 
-            if !value.isEmpty {
-                Text(value)
+            if !label.isEmpty {
+                Text(label)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .padding(.top, 2)
+                    .padding(.top, 1)
+                    .padding(.bottom, 5)
             }
-        }
+        } //: VSTACK
     }
 }
 
 //MARK: - PREVIEW
 #Preview {
-    StateLinearIconBadge(title: .battery, titleFont: .footnote, subtitle: "Good", value: "", lineLevel: 50.0, lineThickness: 10.0, textAlignment: .center)
+    StateLinearIconBadge(title: .battery, titleFont: .footnote, subtitle: "", label: "Good", lineLevel: 50.0, lineThickness: 10.0, textAlignment: .leading)
 }

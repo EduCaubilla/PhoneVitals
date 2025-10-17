@@ -13,15 +13,15 @@ struct StateLinearIconBadge: View {
     var titleFont : Font = .headline
     var subtitle: String = ""
     let label: String
-    var lineLevel: CGFloat = 0.5
+    var lineLevel: CGFloat = 50.0
     var lineThickness: CGFloat = 10.0
     var textAlignment: HorizontalAlignment = .leading
 
     var reverseGradientList: [SystemDataServiceSection] = [.battery]
     var fontRegularList: [Font] = [.body, .subheadline, .callout, .footnote, .caption]
 
-    private var lineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .yellow, .green, .pvGreen], startPoint: .trailing, endPoint: .leading) }
-    private var reverseLineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .yellow, .green, .pvGreen], startPoint: .leading, endPoint: .trailing) }
+    private var lineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .yellow, .green], startPoint: .trailing, endPoint: .leading) }
+    private var reverseLineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .yellow, .green], startPoint: .leading, endPoint: .trailing) }
 
     private var isReverseGradient: Bool { reverseGradientList.contains(title) }
     private var isFontRegular:  Bool  { fontRegularList.contains(titleFont) }

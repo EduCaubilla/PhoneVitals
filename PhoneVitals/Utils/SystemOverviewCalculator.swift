@@ -66,7 +66,7 @@ class SystemOverviewCalculator {
     }
 
     func calculateBatteryScore(batteryLevel: Double, batteryState: String) -> Double {
-        let levelScore = batteryLevel * 100
+        let levelScore = batteryLevel
 
         let stateMultiplier: Double = {
             switch batteryState.lowercased() {
@@ -104,9 +104,9 @@ class SystemOverviewCalculator {
             case 60..<75:
                 return "Good"
             case 75..<90:
-                return "Very Good"
+                return "Great"
             case 90..<100:
-                return "Excellent"
+                return "Superb"
             default:
                 return "Unknown"
         }
@@ -134,7 +134,7 @@ class SystemOverviewCalculator {
     func getOverallScoreColor(score: Double) -> Color {
         switch score {
             case 0..<25:
-                return .pvDarkGreen
+                return .teal.opacity(0.6)
             case 25..<40:
                 return .green
             case 40..<60:
@@ -146,7 +146,7 @@ class SystemOverviewCalculator {
             case 90..<100:
                 return .darkRed
             default:
-                return .pvDarkGreen
+                return .primary
         }
     }
 }

@@ -11,7 +11,7 @@ struct StateRoundIcon: View {
     let score: Double
     let label: String
     let color: Color
-    let stateGradient: Gradient = Gradient(colors: [.pvGreen, .green, .yellow, .orange, .red, .darkRed])
+    let stateGradient: Gradient = Gradient(colors: [.teal.opacity(0.6), .green, .yellow, .orange, .red])
 
     var body: some View {
         Gauge(value: score, in: 0...100) {

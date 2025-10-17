@@ -160,7 +160,7 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
     private func getBatteryLevel() -> Double {
         UIDevice.current.isBatteryMonitoringEnabled = true
         let batteryLevel = UIDevice.current.batteryLevel
-        return Double(batteryLevel)
+        return Double(batteryLevel).roundTwoDigits().baseOneToBase100()
     }
 
     @MainActor
@@ -199,7 +199,7 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     @MainActor
     private func getMemoryFree() -> Double {
-        let result = (memoryData?.totalPhysical ?? 0) - (memoryData?.usedPhysical ?? 0)
+        let result = ((memoryData?.totalPhysical ?? 0) - (memoryData?.usedPhysical ?? 0)).roundTwoDigits()
         return result
     }
 

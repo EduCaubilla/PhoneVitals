@@ -86,10 +86,10 @@ class CPUInfoService {
             let resultCPUInfo = CPUInfo(
                 totalProcessors: resultProcessor.0,
                 processorsUsed: resultProcessor.1,
-                systemCpu: Double(totalSystemTime) / totalTicks * 100,
-                userCpu: Double(totalUserTime) / totalTicks * 100,
-                idleCpu: Double(totalIdleTime) / totalTicks * 100,
-                niceCpu: Double(totalNiceTime) / totalTicks * 100
+                systemCpu: (Double(totalSystemTime) / totalTicks * 100).roundTwoDigits(),
+                userCpu: (Double(totalUserTime) / totalTicks * 100).roundTwoDigits(),
+                idleCpu: (Double(totalIdleTime) / totalTicks * 100).roundTwoDigits(),
+                niceCpu: (Double(totalNiceTime) / totalTicks * 100).roundTwoDigits()
             )
 
             return resultCPUInfo

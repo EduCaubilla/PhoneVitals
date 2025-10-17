@@ -136,8 +136,8 @@ struct MainSystemDataView: View {
                                             StateLinearIconBadge(
                                                 title: .battery,
                                                 titleFont: .headline,
-                                                label: "\(String(format: "%.1f", Double(systemData.batteryLevel) * 100)) %",
-                                                lineLevel: Double(round(systemData.batteryLevel * 100) / 100) * 100,
+                                                label: "\(systemData.batteryLevel.toStringWhole()) %",
+                                                lineLevel: systemData.batteryLevel,
                                                 lineThickness: 7,
                                                 textAlignment: .center
                                             )
@@ -158,16 +158,17 @@ struct MainSystemDataView: View {
                                                 title: .storage,
                                                 titleFont: .headline,
                                                 label: "",
-                                                lineLevel: (systemData.storageUsed / systemData.storageCapacity * 100),
+                                                lineLevel: Tools.percent(partial: systemData.storageUsed, total: systemData.storageCapacity),
                                                 lineThickness: 7,
                                                 textAlignment: .center
                                             )
 
                                             VStack {
-                                                Text("Total - \(String(format: "%.2f", systemData.storageCapacity)) Gb")
+                                                Text("Free - \(systemData.storageAvailable.toStringTwoDigits()) Gb")
                                                     .foregroundStyle(.secondary)
                                                     .font(.footnote)
-                                                Text("Free - \(String(format: "%.2f", systemData.storageAvailable)) Gb")
+
+                                                Text("Total - \(systemData.storageCapacity.roundCeil().toStringWhole()) Gb")
                                                     .foregroundStyle(.secondary)
                                                     .font(.footnote)
                                             }
@@ -186,10 +187,15 @@ struct MainSystemDataView: View {
                                             )
 
                                             VStack {
-                                                Text("Total - \(String(format: "%.2f", systemData.memoryCapacity)) Gb")
+                                                Text("Free - \(systemData.memoryFree.toStringTwoDigits()) Gb")
                                                     .foregroundStyle(.secondary)
                                                     .font(.footnote)
-                                                Text("Free - \(String(format: "%.2f", systemData.memoryFree)) Gb")
+
+                                                Text("Used - \(systemData.memoryUsage.toStringTwoDigits()) Gb")
+                                                    .foregroundStyle(.secondary)
+                                                    .font(.footnote)
+
+                                                Text("Total - \(systemData.memoryCapacity.toStringTwoDigits()) Gb")
                                                     .foregroundStyle(.secondary)
                                                     .font(.footnote)
                                             }
@@ -206,19 +212,19 @@ struct MainSystemDataView: View {
                                                 title: .processor,
                                                 titleFont: .headline,
                                                 label: "",
-                                                lineLevel: ((systemData.cpuUsageUser + systemData.cpuUsageSystem) / systemData.storageCapacity * 100),
+                                                lineLevel: Tools.percent(partial: (systemData.cpuUsageUser + systemData.cpuUsageSystem), total: systemData.storageCapacity),
                                                 lineThickness: 7,
                                                 textAlignment: .center
                                             )
 
                                             VStack {
-                                                Text("User - \(String(format: "%.2f", systemData.cpuUsageUser))%")
+                                                Text("User - \(systemData.cpuUsageUser.toStringTwoDigits())%")
                                                     .foregroundStyle(.secondary)
                                                     .font(.footnote)
-                                                Text("System - \(String(format: "%.2f", systemData.cpuUsageSystem))%")
+                                                Text("System - \(systemData.cpuUsageSystem.toStringTwoDigits())%")
                                                     .foregroundStyle(.secondary)
                                                     .font(.footnote)
-                                                Text("Inactive - \(String(format: "%.2f", systemData.cpuUsageInactive))%")
+                                                Text("Inactive - \(systemData.cpuUsageInactive.toStringTwoDigits())%")
                                                     .foregroundStyle(.secondary)
                                                     .font(.footnote)
                                             }

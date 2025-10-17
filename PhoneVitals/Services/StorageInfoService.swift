@@ -17,19 +17,27 @@ class StorageInfoService {
     }
 
     //MARK: - FUNCTIONS
-    private func setStorageInfo() -> StorageInfo {
-        let fileManager = FileManager.default
-        let attributes = try! fileManager.attributesOfFileSystem(forPath: NSHomeDirectory())
+    private func setStorageInfo() -> StorageInfo? {
+        do {
+            guard let systemAttributes = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory() as String),
+                  let totalCapacity = systemAttributes[.systemSize] as? Int64 else { return nil }
 
-        let totalCapacity = attributes[FileAttributeKey.systemSize] as! Double
-        let availableCapacity = attributes[FileAttributeKey.systemFreeSize] as! Double
-        let usedCapacity = Double(totalCapacity - availableCapacity)
+            let url = URL(fileURLWithPath: NSHomeDirectory())
+            let values = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
 
-        return StorageInfo(
-            totalCapacity: Tools.bytesToGigaBytes(totalCapacity),
-            availableCapacity: Tools.bytesToGigaBytes(availableCapacity),
-            usedCapacity: Tools.bytesToGigaBytes(usedCapacity)
-        )
+            guard let availableCapacity = values.volumeAvailableCapacityForImportantUsage else { return nil }
+
+            let usedCapacity = totalCapacity - availableCapacity
+
+            return StorageInfo(
+                totalCapacity: Tools.bytesToGigaBytes(totalCapacity),
+                availableCapacity: Tools.bytesToGigaBytes(availableCapacity),
+                usedCapacity: Tools.bytesToGigaBytes(usedCapacity)
+            )
+        } catch {
+            print("Error getting storage info \(error)")
+            return nil
+        }
     }
 
     func getStorageInfo() -> StorageInfo? {

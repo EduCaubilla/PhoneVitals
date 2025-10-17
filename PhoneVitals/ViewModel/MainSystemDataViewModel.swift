@@ -8,32 +8,42 @@
 import Foundation
 import Combine
 import SwiftUI
+import SwiftData
 
-class MainSystemDataViewModel: ObservableObject {
+@Observable
+class MainSystemDataViewModel {
     //MARK: - PROPERTIES
-    @Published private(set) var deviceData: DeviceInfo?
-    @Published private(set) var systemData: SystemDataProfileModel?
-    @Published private(set) var overviewData: OverviewData?
-    @Published var isLoading: Bool = false
+    private(set) var deviceData: DeviceInfo?
+    private(set) var systemData: SystemDataProfileModel?
+    private(set) var overviewData: OverviewData?
+    var isLoading: Bool = false
 
     private let systemDataFacade: any SystemDataFacadeProtocol
+    private let systemDataStore: SystemDataStoreProtocol
+
     private let systemOverviewCalculator: SystemOverviewCalculator
 
     private var cancellables: Set<AnyCancellable> = []
 
     //MARK: - INITIALIZER
     init(systemDataFacade: any SystemDataFacadeProtocol = SystemDataFacade(),
-        systemOverviewCalculator: SystemOverviewCalculator = SystemOverviewCalculator()) {
+         systemDataStore: SystemDataStoreProtocol,
+         systemOverviewCalculator: SystemOverviewCalculator = SystemOverviewCalculator()) {
         self.systemDataFacade = systemDataFacade
+        self.systemDataStore = systemDataStore
         self.systemOverviewCalculator = systemOverviewCalculator
 
         setupSubscriptions()
 
         Task { @MainActor in
             self.isLoading = true
+
             await loadFacadeData()
             loadOverviewData()
+
             self.isLoading = false
+
+            await saveProfile()
         }
     }
 
@@ -61,7 +71,10 @@ class MainSystemDataViewModel: ObservableObject {
         //Subscribe to loading data
         systemDataFacade.isLoadingPublisher
             .receive(on: DispatchQueue.main)
-            .assign(to: &$isLoading)
+            .sink { [weak self] loading in
+                self?.isLoading = loading
+            }
+            .store(in: &cancellables)
     }
 
     //MARK: - Load data
@@ -78,6 +91,21 @@ class MainSystemDataViewModel: ObservableObject {
         Task { @MainActor in
             guard let systemData = systemData else { return }
             overviewData = systemOverviewCalculator.calculateOverviewData(profile: systemData)
+        }
+    }
+
+    //MARK: - Save data
+    func saveProfile() async {
+        guard let systemData = systemData else { return }
+        do {
+            let profileSaved = try systemDataStore.save(systemData)
+            if profileSaved {
+                print("Profile saved successfully")
+            } else {
+                print("Profile not saved")
+            }
+        } catch {
+            print("There was an error trying to save the profile \(String(describing: systemData.id)) : \(error.localizedDescription)")
         }
     }
 

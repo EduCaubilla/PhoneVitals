@@ -15,7 +15,7 @@ final class SystemDataProfileDTO {
     var thermalState: String
 
     var batteryLevel: Double
-    var batteryState: Int
+    var batteryState: String
 
     var storageCapacity: Double
     var storageUsed: Double
@@ -37,7 +37,7 @@ final class SystemDataProfileDTO {
         id: UUID?,
         thermalState: ThermalStateGrade,
         batteryLevel: Double,
-        batteryState: Int,
+        batteryState: String,
         storageCapacity: Double,
         storageUsed: Double,
         storageAvailable: Double,
@@ -70,7 +70,7 @@ final class SystemDataProfileDTO {
             id: id,
             thermalState: thermalState,
             batteryLevel: batteryLevel,
-            batteryState: UIDevice.BatteryState(rawValue: batteryState)!.displayName,
+            batteryState: batteryState,
             storageCapacity: storageCapacity,
             storageUsed: storageUsed,
             storageAvailable: storageAvailable,

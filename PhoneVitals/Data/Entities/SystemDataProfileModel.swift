@@ -53,7 +53,7 @@ public struct SystemDataProfileModel: Codable, Equatable {
         cpuUsageInactive: Double,
         timestamp: Date
     ) {
-        self.id = id
+        self.id = id ?? UUID()
         self.thermalState = thermalState
         self.batteryLevel = batteryLevel
         self.batteryState = batteryState
@@ -74,7 +74,7 @@ public struct SystemDataProfileModel: Codable, Equatable {
             id: id,
             thermalState: ThermalStateGrade(rawValue: thermalState) ?? .fair,
             batteryLevel: batteryLevel,
-            batteryState: UIDevice.BatteryState.mapFromStringToInt(batteryState),
+            batteryState: batteryState,
             storageCapacity: storageCapacity,
             storageUsed: storageUsed,
             storageAvailable: storageAvailable,

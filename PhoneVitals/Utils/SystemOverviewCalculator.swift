@@ -56,10 +56,10 @@ class SystemOverviewCalculator {
     func calculateThermalScore(_ thermalState: String) -> Double {
         return {
             switch thermalState.lowercased() {
-                case "nominal": return 10
-                case "fair": return 40
-                case "serious": return 70
-                case "critical": return 100
+                case "nominal": return 12.5
+                case "fair": return 35.0
+                case "serious": return 65.0
+                case "critical": return 87.5
                 default: return 50
             }
         }()
@@ -95,9 +95,9 @@ class SystemOverviewCalculator {
 
     func getOverallScoreLabel(score: Double) -> String {
         switch score {
-            case 0..<25:
+            case 0..<15:
                 return "Critical"
-            case 25..<40:
+            case 15..<40:
                 return "Poor"
             case 40..<60:
                 return "Fair"
@@ -114,9 +114,9 @@ class SystemOverviewCalculator {
 
     func getOverallInvertedScoreLabel(score: Double) -> String {
         switch score {
-            case 0..<25:
+            case 0..<15:
                 return "Superb"
-            case 25..<40:
+            case 15..<40:
                 return "Great"
             case 40..<60:
                 return "Good"
@@ -133,15 +133,15 @@ class SystemOverviewCalculator {
 
     func getOverallScoreColor(score: Double) -> Color {
         switch score {
-            case 0..<25:
+            case 0..<15:
                 return .teal.opacity(0.6)
-            case 25..<40:
+            case 15..<40:
                 return .green
             case 40..<60:
                 return .darkYellow
             case 60..<75:
                 return .orange
-            case 75..<100:
+            case 75..<90:
                 return .red
             case 90..<100:
                 return .darkRed

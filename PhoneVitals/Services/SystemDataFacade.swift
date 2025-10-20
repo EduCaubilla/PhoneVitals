@@ -153,7 +153,7 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
     @MainActor
     private func getThermalState() -> String {
         let thermalState = ProcessInfo.processInfo.thermalState
-        return ThermalStateGrade.mapFromOriginThermalStateToString(state: thermalState)
+        return ThermalStateGrade.mapFromOriginThermalStateToString(thermalState)
     }
 
     @MainActor

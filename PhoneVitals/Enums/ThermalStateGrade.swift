@@ -41,22 +41,37 @@ enum ThermalStateGrade : String, CaseIterable, Identifiable {
         }
     }
 
-    static func mapFromDisplayValueToLevel(_ displayValue: String) -> CGFloat {
+    static func mapFromOriginThermalStateToString(_ state: ProcessInfo.ThermalState) -> String {
+        switch state {
+            case .nominal:
+                return "nominal"
+            case .fair:
+                return "fair"
+            case .serious:
+                return "serious"
+            case .critical:
+                return "critical"
+            @unknown default:
+                return "unknown"
+        }
+    }
+
+    static func mapFromStringToLevel(_ displayValue: String) -> CGFloat {
         switch displayValue {
-            case ThermalStateGrade.nominal.displayValue:
-                return 20.0
-            case ThermalStateGrade.fair.displayValue:
-                return 50.0
-            case ThermalStateGrade.serious.displayValue:
-                return 70.0
-            case ThermalStateGrade.critical.displayValue:
-                return 90.0
+            case ThermalStateGrade.nominal.rawValue:
+                return 12.5
+            case ThermalStateGrade.fair.rawValue:
+                return 35.0
+            case ThermalStateGrade.serious.rawValue:
+                return 65.0
+            case ThermalStateGrade.critical.rawValue:
+                return 87.5
             default:
                 return 0.0
         }
     }
 
-    static func mapFromOriginThermalStateToString(state: ProcessInfo.ThermalState) -> String {
+    static func mapFromOriginThermalStateToStringDisplay(state: ProcessInfo.ThermalState) -> String {
         switch state {
             case .nominal:
                 return ThermalStateGrade.nominal.displayValue
@@ -74,13 +89,13 @@ enum ThermalStateGrade : String, CaseIterable, Identifiable {
     static func mapFromOriginThermalStateToLevel(state: ProcessInfo.ThermalState) -> CGFloat {
         switch state {
             case .nominal:
-                return 88.0
+                return 87.5
             case .fair:
                 return 65.0
             case .serious:
-                return 40.0
+                return 35.0
             case .critical:
-                return 15.0
+                return 12.5
             default:
                 return 50.0
         }
@@ -94,7 +109,7 @@ enum ThermalStateGrade : String, CaseIterable, Identifiable {
         }
     }
 
-    static func mapFromOriginStringToGradeString(state: String) -> String {
+    static func mapFromOriginStringToGradeStringDisplay(state: String) -> String {
         if let stateGrade = ThermalStateGrade(rawValue: state) {
             return stateGrade.displayValue
         } else {

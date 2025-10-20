@@ -127,8 +127,8 @@ struct MainSystemDataView: View {
                                                 StateLinearIconBadge(
                                                     title: .thermalState,
                                                     titleFont: .headline,
-                                                    label: systemData.thermalState,
-                                                    lineLevel: ThermalStateGrade.mapFromDisplayValueToLevel(systemData.thermalState),
+                                                    label: ThermalStateGrade.mapFromOriginStringToGradeStringDisplay(state: systemData.thermalState),
+                                                    lineLevel: ThermalStateGrade.mapFromStringToLevel(systemData.thermalState),
                                                     lineThickness: 7,
                                                     textAlignment: .center
                                                 )
@@ -245,14 +245,14 @@ struct MainSystemDataView: View {
                             .navigationBarTitleDisplayMode(.inline)
                             .padding(.horizontal, 20)
                             .toolbarBackground(.pvLightGreen, for: .navigationBar)
-                            .toolbar {
-                                ToolbarItem(placement: .navigationBarTrailing) {
-                                    NavigationLink(destination: HistorySystemDataView()){
-                                        Image(systemName: "clock.arrow.circlepath")
-                                            .foregroundStyle(Color.secondary)
-                                    }
-                                }
-                            }
+//                            .toolbar {
+//                                ToolbarItem(placement: .navigationBarTrailing) {
+//                                    NavigationLink(destination: HistorySystemDataView()){
+//                                        Image(systemName: "clock.arrow.circlepath")
+//                                            .foregroundStyle(Color.secondary)
+//                                    }
+//                                }
+//                            }
                         } //: SCROLLVIEW
                     }
                     else {

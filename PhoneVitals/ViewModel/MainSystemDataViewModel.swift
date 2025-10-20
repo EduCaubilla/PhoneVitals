@@ -128,7 +128,7 @@ class MainSystemDataViewModel {
     func getOverviewLabelFor(_ section: SystemDataServiceSection) -> String {
         switch section {
             case .thermalState:
-                return systemOverviewCalculator.getOverallScoreLabel(score: overviewData?.thermalScore ?? 50.0)
+                return systemOverviewCalculator.getOverallInvertedScoreLabel(score: overviewData?.thermalScore ?? 50.0)
             case .battery:
                 return systemOverviewCalculator.getOverallScoreLabel(score: overviewData?.batteryScore ?? 50.0)
             case .storage:

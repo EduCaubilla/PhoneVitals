@@ -10,15 +10,16 @@ import SwiftData
 
 struct MainSystemDataView: View {
     //MARK: - PROPERTIES
-    @Environment(\.modelContext) var modelContext
+//    @Environment(\.modelContext) var modelContext
 
     @State private var viewModel : MainSystemDataViewModel?
+    @State private var showOverallInfo: Bool = false
 
     //MARK: - INITIALIZER
-    init() {
+    init(viewModel: MainSystemDataViewModel? = MainSystemDataViewModel()) {
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(Color.pvDarkGreen)]
 //        self.viewModel = viewModel ?? MainSystemDataViewModel(systemDataStore: SystemDataStore(modelContext: modelContext))
-//        _viewModel = StateObject(wrappedValue: viewModel!)
+        _viewModel = State(wrappedValue: viewModel!)
     }
 
     //MARK: - BODY
@@ -244,6 +245,15 @@ struct MainSystemDataView: View {
                             .navigationBarTitleDisplayMode(.inline)
                             .padding(.horizontal, 20)
                             .toolbarBackground(.pvLightGreen, for: .navigationBar)
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarTrailing) {
+                                    Image(systemName: "info.circle")
+                                        .foregroundStyle(.pvDarkGreen)
+                                        .onTapGesture {
+                                            showOverallInfo.toggle()
+                                        }
+                                }
+                            }
 //                            .toolbar {
 //                                ToolbarItem(placement: .navigationBarTrailing) {
 //                                    NavigationLink(destination: HistorySystemDataView()){
@@ -252,6 +262,12 @@ struct MainSystemDataView: View {
 //                                    }
 //                                }
 //                            }
+                            .sheet(isPresented: $showOverallInfo) {
+                                Text("Test Info")
+                                    .font(.largeTitle)
+                                    .fontWeight(.medium)
+                                    .foregroundStyle(.teal)
+                            }
                         } //: SCROLLVIEW
                         .refreshable {
                             viewModel.loadSystemDeviceData()
@@ -263,9 +279,9 @@ struct MainSystemDataView: View {
                 }
             } //: ZSTACK
         } //: NAV
-        .task {
-            viewModel = MainSystemDataViewModel(systemDataStore: SystemDataStore(modelContext: modelContext))
-        }
+//        .task {
+//            viewModel = MainSystemDataViewModel(systemDataStore: SystemDataStore(modelContext: modelContext))
+//        }
     } //: VIEW
 }
 

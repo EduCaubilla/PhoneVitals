@@ -19,7 +19,7 @@ class MainSystemDataViewModel {
     var isLoading: Bool = false
 
     private let systemDataFacade: any SystemDataFacadeProtocol
-    private let systemDataStore: SystemDataStoreProtocol
+//    private let systemDataStore: SystemDataStoreProtocol
 
     private let systemOverviewCalculator: SystemOverviewCalculator
 
@@ -27,10 +27,10 @@ class MainSystemDataViewModel {
 
     //MARK: - INITIALIZER
     init(systemDataFacade: any SystemDataFacadeProtocol = SystemDataFacade(),
-         systemDataStore: SystemDataStoreProtocol,
+//         systemDataStore: SystemDataStoreProtocol,
          systemOverviewCalculator: SystemOverviewCalculator = SystemOverviewCalculator()) {
         self.systemDataFacade = systemDataFacade
-        self.systemDataStore = systemDataStore
+//        self.systemDataStore = systemDataStore
         self.systemOverviewCalculator = systemOverviewCalculator
 
         setupSubscriptions()
@@ -42,7 +42,7 @@ class MainSystemDataViewModel {
 
             self.isLoading = false
 
-            await saveProfile()
+//            await saveProfile()
         }
     }
 
@@ -107,19 +107,20 @@ class MainSystemDataViewModel {
     }
 
     //MARK: - Save data
-    func saveProfile() async {
-        guard let systemData = systemData else { return }
-        do {
-            let profileSaved = try systemDataStore.save(systemData)
-            if profileSaved {
-                print("Profile saved successfully")
-            } else {
-                print("Profile not saved")
-            }
-        } catch {
-            print("There was an error trying to save the profile \(String(describing: systemData.id)) : \(error.localizedDescription)")
-        }
-    }
+    //Commented so it can be added on next phase
+//    func saveProfile() async {
+//        guard let systemData = systemData else { return }
+//        do {
+//            let profileSaved = try systemDataStore.save(systemData)
+//            if profileSaved {
+//                print("Profile saved successfully")
+//            } else {
+//                print("Profile not saved")
+//            }
+//        } catch {
+//            print("There was an error trying to save the profile \(String(describing: systemData.id)) : \(error.localizedDescription)")
+//        }
+//    }
 
     //MARK: - View usage functions
     func getOverviewValueFor(_ section: SystemDataServiceSection) -> Double {

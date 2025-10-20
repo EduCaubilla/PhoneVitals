@@ -119,7 +119,6 @@ struct MainSystemDataView: View {
                                 //MARK: - Additional Information
                                 VStack(alignment: .center, spacing: 0) {
                                     Grid(alignment: .top, horizontalSpacing: 25, verticalSpacing: 10) {
-
                                         GridRow (alignment: .top) {
 
                                             //MARK: - Section Thermal State
@@ -254,6 +253,9 @@ struct MainSystemDataView: View {
 //                                }
 //                            }
                         } //: SCROLLVIEW
+                        .refreshable {
+                            viewModel.loadSystemDeviceData()
+                        }
                     }
                     else {
                         ProgressView()

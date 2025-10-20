@@ -38,8 +38,7 @@ class MainSystemDataViewModel {
         Task { @MainActor in
             self.isLoading = true
 
-            await loadFacadeData()
-            loadOverviewData()
+            loadSystemDeviceData()
 
             self.isLoading = false
 
@@ -91,6 +90,19 @@ class MainSystemDataViewModel {
         Task { @MainActor in
             guard let systemData = systemData else { return }
             overviewData = systemOverviewCalculator.calculateOverviewData(profile: systemData)
+        }
+    }
+
+    func loadSystemDeviceData() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            Task { @MainActor in
+                guard let self else {
+                    print("Error in MainSystemDataViewModel.loadSystemDeviceData(): self is nil")
+                    return
+                }
+                await self.loadFacadeData()
+                self.loadOverviewData()
+            }
         }
     }
 

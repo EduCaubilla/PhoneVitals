@@ -15,6 +15,7 @@ public struct SystemDataProfileModel: Codable, Equatable {
 
     var batteryLevel: Double
     var batteryState: String
+    var batteryLowPowerMode: Bool
 
     var storageCapacity: Double
     var storageUsed: Double
@@ -42,6 +43,7 @@ public struct SystemDataProfileModel: Codable, Equatable {
         thermalState: String,
         batteryLevel: Double,
         batteryState: String,
+        batteryLowPowerMode: Bool,
         storageCapacity: Double,
         storageUsed: Double,
         storageAvailable: Double,
@@ -57,6 +59,7 @@ public struct SystemDataProfileModel: Codable, Equatable {
         self.thermalState = thermalState
         self.batteryLevel = batteryLevel
         self.batteryState = batteryState
+        self.batteryLowPowerMode = batteryLowPowerMode
         self.storageCapacity = storageCapacity
         self.storageUsed = storageUsed
         self.storageAvailable = storageAvailable
@@ -75,6 +78,7 @@ public struct SystemDataProfileModel: Codable, Equatable {
             thermalState: ThermalStateGrade(rawValue: thermalState) ?? .fair,
             batteryLevel: batteryLevel,
             batteryState: batteryState,
+            batteryLowPowerMode: batteryLowPowerMode,
             storageCapacity: storageCapacity,
             storageUsed: storageUsed,
             storageAvailable: storageAvailable,

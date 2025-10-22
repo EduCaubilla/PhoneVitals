@@ -45,7 +45,7 @@ struct MainSystemDataView: View {
                                 //MARK: - Overview
                                 VStack(alignment: .leading, spacing: 0) {
                                     /// Overview Title
-                                    Text("Overview")
+                                    Text(Constants.overviewLabel)
                                         .font(.title)
                                         .fontWeight(.bold)
                                         .foregroundStyle(.primary.opacity(0.5))
@@ -98,7 +98,7 @@ struct MainSystemDataView: View {
 
                                 //MARK: - Section Device Information
                                 VStack(alignment: .center) {
-                                    Text("Device Information")
+                                    Text(Constants.deviceInformationLabel)
                                         .font(.headline)
                                         .fontWeight(.medium)
                                         .foregroundColor(.primary)
@@ -106,7 +106,7 @@ struct MainSystemDataView: View {
                                         .padding(.bottom, 3)
 
                                     VStack {
-                                        Text(String(format: "%@ (%@)", deviceData.modelName, deviceData.modelIdentifier)) // Model Name (Model Identifier)
+                                        Text(String(format: Constants.formatDeviceLabel, deviceData.modelName, deviceData.modelIdentifier)) // Model Name (Model Identifier)
                                             .foregroundColor(.secondary)
 
                                         Text(deviceData.deviceSystemVersion) // System Version
@@ -139,7 +139,7 @@ struct MainSystemDataView: View {
                                                 StateLinearIconBadge(
                                                     title: .battery,
                                                     titleFont: .headline,
-                                                    label: "\(systemData.batteryLevel.toStringWhole()) %",
+                                                    label: "\(systemData.batteryLevel.toStringWhole()) \(Constants.percentageLabel)",
                                                     lineLevel: systemData.batteryLevel,
                                                     lineThickness: 7,
                                                     textAlignment: .center
@@ -167,11 +167,11 @@ struct MainSystemDataView: View {
                                                 )
 
                                                 VStack {
-                                                    Text("Free - \(systemData.storageAvailable.toStringTwoDigits()) Gb")
+                                                    Text("\(Constants.freeLabel) \(systemData.storageAvailable.toStringTwoDigits()) \(Constants.gigabiteLabel)")
                                                         .foregroundStyle(.secondary)
                                                         .font(.footnote)
 
-                                                    Text("Total - \(systemData.storageCapacity.roundCeil().toStringWhole()) Gb")
+                                                    Text("\(Constants.totalLabel) \(systemData.storageCapacity.roundCeil().toStringWhole()) \(Constants.gigabiteLabel)")
                                                         .foregroundStyle(.secondary)
                                                         .font(.footnote)
                                                 }
@@ -190,15 +190,15 @@ struct MainSystemDataView: View {
                                                 )
 
                                                 VStack {
-                                                    Text("Free - \(systemData.memoryFree.toStringTwoDigits()) Gb")
+                                                    Text("\(Constants.freeLabel) \(systemData.memoryFree.toStringTwoDigits()) \(Constants.gigabiteLabel)")
                                                         .foregroundStyle(.secondary)
                                                         .font(.footnote)
 
-                                                    Text("Used - \(systemData.memoryUsage.toStringTwoDigits()) Gb")
+                                                    Text("\(Constants.usedLabel) \(systemData.memoryUsage.toStringTwoDigits()) \(Constants.gigabiteLabel)")
                                                         .foregroundStyle(.secondary)
                                                         .font(.footnote)
 
-                                                    Text("Total - \(systemData.memoryCapacity.toStringTwoDigits()) Gb")
+                                                    Text("\(Constants.totalLabel) \(systemData.memoryCapacity.toStringTwoDigits()) \(Constants.gigabiteLabel)")
                                                         .foregroundStyle(.secondary)
                                                         .font(.footnote)
                                                 }
@@ -221,13 +221,13 @@ struct MainSystemDataView: View {
                                                 )
 
                                                 VStack {
-                                                    Text("User - \(systemData.cpuUsageUser.toStringTwoDigits())%")
+                                                    Text("\(Constants.userLabel) \(systemData.cpuUsageUser.toStringTwoDigits())\(Constants.percentageLabel)")
                                                         .foregroundStyle(.secondary)
                                                         .font(.footnote)
-                                                    Text("System - \(systemData.cpuUsageSystem.toStringTwoDigits())%")
+                                                    Text("\(Constants.systemLabel) \(systemData.cpuUsageSystem.toStringTwoDigits())\(Constants.percentageLabel)")
                                                         .foregroundStyle(.secondary)
                                                         .font(.footnote)
-                                                    Text("Inactive - \(systemData.cpuUsageInactive.toStringTwoDigits())%")
+                                                    Text("\(Constants.inactiveLabel) \(systemData.cpuUsageInactive.toStringTwoDigits())\(Constants.percentageLabel)")
                                                         .foregroundStyle(.secondary)
                                                         .font(.footnote)
                                                 }
@@ -241,14 +241,15 @@ struct MainSystemDataView: View {
                                 .padding(.vertical, 15)
 
                             } //: VSTACK MAIN
-                            .navigationTitle(Text("Phone Vitals"))
+                            .navigationTitle(Text(Constants.appLabel))
                             .navigationBarTitleDisplayMode(.inline)
                             .padding(.horizontal, 20)
                             .toolbarBackground(.pvLightGreen, for: .navigationBar)
                             .toolbar {
                                 ToolbarItem(placement: .navigationBarTrailing) {
-                                    Image(systemName: "info.circle")
+                                    Image(systemName: Constants.infoCircleIcon)
                                         .foregroundStyle(.pvDarkGreen)
+                                        .font(.subheadline)
                                         .onTapGesture {
                                             showOverallInfo.toggle()
                                         }
@@ -263,10 +264,7 @@ struct MainSystemDataView: View {
 //                                }
 //                            }
                             .sheet(isPresented: $showOverallInfo) {
-                                Text("Test Info")
-                                    .font(.largeTitle)
-                                    .fontWeight(.medium)
-                                    .foregroundStyle(.teal)
+                                InfoSystemDataView()
                             }
                         } //: SCROLLVIEW
                         .refreshable {
@@ -288,5 +286,5 @@ struct MainSystemDataView: View {
 //MARK: - PREVIEW
 #Preview {
     MainSystemDataView()
-        .modelContainer(for: SystemDataProfileDTO.self, inMemory: true)
+//        .modelContainer(for: SystemDataProfileDTO.self, inMemory: true)
 }

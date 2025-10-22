@@ -22,7 +22,7 @@ class SystemOverviewCalculator {
     func calculateOverviewData(profile: SystemDataProfileModel) -> OverviewData {
         let thermalScore: Double = calculateThermalScore(profile.thermalState)
 
-        let batteryScore: Double = calculateBatteryScore(batteryLevel: profile.batteryLevel, batteryState: profile.batteryState)
+        let batteryScore: Double = calculateBatteryScore(batteryLevel: profile.batteryLevel, batteryState: profile.batteryState, batteryLowMode: profile.batteryLowPowerMode)
 
         let storageScore: Double = calculateStorageScore(storageAvailable: profile.storageAvailable, storageCapacity: profile.storageCapacity)
 
@@ -65,28 +65,37 @@ class SystemOverviewCalculator {
         }()
     }
 
-    func calculateBatteryScore(batteryLevel: Double, batteryState: String) -> Double {
-        let levelScore = batteryLevel
+    func calculateBatteryScore(batteryLevel: Double, batteryState: String, batteryLowMode: Bool) -> Double {
+        let levelScore : Double = {
+            switch batteryLevel {
+                case 0...20.0: return 20.0
+                case 21.0...40.0: return 70.0
+                case 41.0...80.0: return 95.0
+                case 81.0...99.0: return 80.0
+                default: return 50.0
+            }
+        }()
 
         let stateMultiplier: Double = {
             switch batteryState.lowercased() {
                 case "charging", "full": return 1.0
-                case "unplugged": return batteryLevel > 0.2 ? 1.0 : 0.8
+                case "unplugged": return batteryLevel > 0.2 ? 1.0 : (batteryLowMode ? 0.8 : 0.6)
                 default: return 1.0
             }
         }()
 
+        print("Battery Level: \(batteryLevel), State: \(batteryState), Level Score: \(levelScore), State Multiplier: \(stateMultiplier) --> TOTAL SCORE: \(levelScore * stateMultiplier)")
         return levelScore * stateMultiplier
     }
 
     func calculateStorageScore(storageAvailable: Double, storageCapacity: Double) -> Double {
         let availablePercentage = (storageAvailable / storageCapacity) * 100
 
-        if availablePercentage >= 70 { return 100 }
-        else if availablePercentage >= 50 { return 80 }
-        else if availablePercentage >= 30 { return 50 }
-        else if availablePercentage >= 15 { return 30 }
-        else { return 10 }
+        if availablePercentage >= 20 { return 100 }
+        else if availablePercentage >= 10 { return 70 }
+        else if availablePercentage >= 5 { return 40 }
+        else if availablePercentage >= 3 { return 15 }
+        else { return 5 }
     }
 
     func calculateMemoryScore(memoryAvailable: Double, memoryCapacity: Double) -> Double {
@@ -105,7 +114,7 @@ class SystemOverviewCalculator {
                 return "Good"
             case 75..<90:
                 return "Great"
-            case 90..<100:
+            case 90...100:
                 return "Superb"
             default:
                 return "Unknown"

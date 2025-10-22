@@ -13,6 +13,7 @@ enum SystemDataServiceSection: String, CaseIterable {
     case storage = "Storage"
     case ramMemory = "RAM Memory"
     case processor = "CPU Processor"
+    case example = "Example value"
 
     var displayName : String {
         return rawValue

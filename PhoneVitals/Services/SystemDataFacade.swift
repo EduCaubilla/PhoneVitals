@@ -122,6 +122,7 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
         let thermalState = getThermalState()
         let batteryLevel = getBatteryLevel()
         let batteryState = getBatteryState()
+        let batteryLowPowerMode = getBatteryLowPowerMode()
         let storageCapacity = getStorageCapacity()
         let storageUsed = getStorageUsed()
         let storageAvailable = getStorageAvailable()
@@ -137,6 +138,7 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
             thermalState: thermalState,
             batteryLevel: batteryLevel,
             batteryState: batteryState,
+            batteryLowPowerMode: batteryLowPowerMode,
             storageCapacity: storageCapacity,
             storageUsed: storageUsed,
             storageAvailable: storageAvailable,
@@ -161,6 +163,13 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
         UIDevice.current.isBatteryMonitoringEnabled = true
         let batteryLevel = UIDevice.current.batteryLevel
         return Double(batteryLevel).roundTwoDigits().baseOneToBase100()
+    }
+
+    @MainActor
+    private func getBatteryLowPowerMode() -> Bool {
+        UIDevice.current.isBatteryMonitoringEnabled = true
+        let isLowPowerMode = UIDevice.current.isBatteryMonitoringEnabled
+        return isLowPowerMode
     }
 
     @MainActor

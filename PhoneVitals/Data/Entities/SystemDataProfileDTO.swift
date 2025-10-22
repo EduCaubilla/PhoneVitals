@@ -16,6 +16,7 @@ final class SystemDataProfileDTO {
 
     var batteryLevel: Double
     var batteryState: String
+    var batteryLowPowerMode: Bool
 
     var storageCapacity: Double
     var storageUsed: Double
@@ -38,6 +39,7 @@ final class SystemDataProfileDTO {
         thermalState: ThermalStateGrade,
         batteryLevel: Double,
         batteryState: String,
+        batteryLowPowerMode: Bool,
         storageCapacity: Double,
         storageUsed: Double,
         storageAvailable: Double,
@@ -53,6 +55,7 @@ final class SystemDataProfileDTO {
         self.thermalState = thermalState.rawValue
         self.batteryLevel = batteryLevel
         self.batteryState = batteryState
+        self.batteryLowPowerMode = batteryLowPowerMode
         self.storageCapacity = storageCapacity
         self.storageUsed = storageUsed
         self.storageAvailable = storageAvailable
@@ -71,6 +74,7 @@ final class SystemDataProfileDTO {
             thermalState: thermalState,
             batteryLevel: batteryLevel,
             batteryState: batteryState,
+            batteryLowPowerMode: batteryLowPowerMode,
             storageCapacity: storageCapacity,
             storageUsed: storageUsed,
             storageAvailable: storageAvailable,

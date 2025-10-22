@@ -135,6 +135,8 @@ class MainSystemDataViewModel {
                 return overviewData?.memoryScore ?? 50.0
             case .processor:
                 return overviewData?.cpuScore ?? 50.0
+            case .example:
+                return 50.0
         }
     }
 
@@ -150,6 +152,8 @@ class MainSystemDataViewModel {
                 return systemOverviewCalculator.getOverallInvertedScoreLabel(score: overviewData?.memoryScore ?? 50.0)
             case .processor:
                 return systemOverviewCalculator.getOverallInvertedScoreLabel(score: overviewData?.cpuScore ?? 50.0)
+            case .example:
+                return "Example"
         }
     }
     

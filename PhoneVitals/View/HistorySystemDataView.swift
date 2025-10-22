@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct HistorySystemDataView: View {
+    //MARK: - PROPERTIES
     @Environment(\.modelContext) private var modelContext
 
     //MARK: - BODY

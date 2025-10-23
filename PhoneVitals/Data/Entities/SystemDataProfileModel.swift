@@ -1,0 +1,94 @@
+//
+//  SystemDataProfileModel.swift
+//  PhoneVitals
+//
+//  Created by Edu Caubilla on 3/10/25.
+//
+
+import Foundation
+import SwiftData
+import UIKit
+
+public struct SystemDataProfileModel: Codable, Equatable {
+    var id: UUID?
+    var thermalState: String
+
+    var batteryLevel: Double
+    var batteryState: String
+    var batteryLowPowerMode: Bool
+
+    var storageCapacity: Double
+    var storageUsed: Double
+    var storageAvailable: Double
+
+    var memoryUsage: Double
+    var memoryCapacity: Double
+    var memoryFree: Double
+
+    var cpuUsageUser: Double
+    var cpuUsageSystem: Double
+    var cpuUsageInactive: Double
+
+    var timestamp: Date
+
+    var overallHealth: String?
+
+    var memoryLevel: Double {
+        guard memoryCapacity > 0 else { return 0 }
+        return Double(memoryUsage) / Double(memoryCapacity) * 100
+    }
+
+    init(
+        id: UUID?,
+        thermalState: String,
+        batteryLevel: Double,
+        batteryState: String,
+        batteryLowPowerMode: Bool,
+        storageCapacity: Double,
+        storageUsed: Double,
+        storageAvailable: Double,
+        memoryUsage: Double,
+        memoryCapacity: Double,
+        memoryFree: Double,
+        cpuUsageUser: Double,
+        cpuUsageSystem: Double,
+        cpuUsageInactive: Double,
+        timestamp: Date
+    ) {
+        self.id = id ?? UUID()
+        self.thermalState = thermalState
+        self.batteryLevel = batteryLevel
+        self.batteryState = batteryState
+        self.batteryLowPowerMode = batteryLowPowerMode
+        self.storageCapacity = storageCapacity
+        self.storageUsed = storageUsed
+        self.storageAvailable = storageAvailable
+        self.memoryUsage = memoryUsage
+        self.memoryCapacity = memoryCapacity
+        self.memoryFree = memoryFree
+        self.cpuUsageUser = cpuUsageUser
+        self.cpuUsageSystem = cpuUsageSystem
+        self.cpuUsageInactive = cpuUsageInactive
+        self.timestamp = timestamp
+    }
+
+    func mapToDTO() -> SystemDataProfileDTO {
+        return SystemDataProfileDTO(
+            id: id,
+            thermalState: ThermalStateGrade(rawValue: thermalState) ?? .fair,
+            batteryLevel: batteryLevel,
+            batteryState: batteryState,
+            batteryLowPowerMode: batteryLowPowerMode,
+            storageCapacity: storageCapacity,
+            storageUsed: storageUsed,
+            storageAvailable: storageAvailable,
+            memoryUsage: memoryUsage,
+            memoryCapacity: memoryCapacity,
+            memoryFree: memoryFree,
+            cpuUsageUser: cpuUsageUser,
+            cpuUsageSystem: cpuUsageSystem,
+            cpuUsageInactive: cpuUsageInactive,
+            timestamp: timestamp
+        )
+    }
+}

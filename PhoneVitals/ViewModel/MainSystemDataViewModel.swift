@@ -34,16 +34,15 @@ class MainSystemDataViewModel {
         self.systemOverviewCalculator = systemOverviewCalculator
 
         setupSubscriptions()
+        
+        self.isLoading = true
 
-        Task { @MainActor in
-            self.isLoading = true
-
+        Task {
             loadSystemDeviceData()
-
-            self.isLoading = false
-
 //            await saveProfile()
         }
+
+        self.isLoading = false
     }
 
     //MARK: - FUNCTIONS
@@ -77,25 +76,9 @@ class MainSystemDataViewModel {
     }
 
     //MARK: - Load data
-    func loadFacadeData() async {
-        Task { @MainActor in
-            isLoading = true
-            self.systemData =  await self.systemDataFacade.getAllSystemData()
-            self.deviceData = await self.systemDataFacade.getAllDeviceData()
-            isLoading = false
-        }
-    }
-
-    func loadOverviewData() {
-        Task { @MainActor in
-            guard let systemData = systemData else { return }
-            overviewData = systemOverviewCalculator.calculateOverviewData(profile: systemData)
-        }
-    }
-
     func loadSystemDeviceData() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-            Task { @MainActor in
+            Task {
                 guard let self else {
                     print("Error in MainSystemDataViewModel.loadSystemDeviceData(): self is nil")
                     return
@@ -105,6 +88,23 @@ class MainSystemDataViewModel {
             }
         }
     }
+
+    func loadFacadeData() async {
+        Task { [weak self] in
+            self?.isLoading = true
+            self?.systemData =  await self?.systemDataFacade.getAllSystemData()
+            self?.deviceData = await self?.systemDataFacade.getAllDeviceData()
+            self?.isLoading = false
+        }
+    }
+
+    func loadOverviewData() {
+        Task { [weak self] in
+            guard let systemData = self?.systemData else { return }
+            self?.overviewData = self?.systemOverviewCalculator.calculateOverviewData(profile: systemData)
+        }
+    }
+
 
     //MARK: - Save data
     //Commented so it can be added on next phase
@@ -124,16 +124,22 @@ class MainSystemDataViewModel {
 
     //MARK: - View usage functions
     func getOverviewValueFor(_ section: SystemDataServiceSection) -> Double {
+        print("Get overview value for \(section) --> ")
         switch section {
             case .thermalState:
+                print(overviewData?.thermalScore ?? 50.0)
                 return overviewData?.thermalScore ?? 50.0
             case .battery:
+                print(overviewData?.batteryScore ?? 50.0)
                 return overviewData?.batteryScore ?? 50.0
             case .storage:
+                print(overviewData?.storageScore ?? 50.0)
                 return overviewData?.storageScore ?? 50.0
             case .ramMemory:
+                print(overviewData?.memoryScore ?? 50.0)
                 return overviewData?.memoryScore ?? 50.0
             case .processor:
+                print(overviewData?.cpuScore ?? 50.0)
                 return overviewData?.cpuScore ?? 50.0
             case .example:
                 return 50.0

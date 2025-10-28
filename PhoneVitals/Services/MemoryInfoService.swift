@@ -14,7 +14,7 @@ class MemoryInfoService {
     private weak var timer: Timer?
     private var cancellables = Set<AnyCancellable>()
 
-    let memoryInfoPublisher = PassthroughSubject<MemoryInfo, Never>()
+    var memoryInfoPublisher = PassthroughSubject<MemoryInfo, Never>()
 
     //MARK: - FUNCTIONS
 

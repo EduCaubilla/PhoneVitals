@@ -8,7 +8,11 @@
 import Foundation
 import SwiftUI
 
-class SystemOverviewCalculator {
+class SystemOverviewCalculator: SystemOverviewCalculationProtocol {
+    var overviewData: OverviewData?
+    
+    var overviewDataCallCount: Int = 0
+    
     var weights: [SystemDataServiceSection: Double] {
         return [
             .thermalState: 0.3,    // Most critical - can damage device
@@ -53,7 +57,7 @@ class SystemOverviewCalculator {
         )
     }
 
-    func calculateThermalScore(_ thermalState: String) -> Double {
+    private func calculateThermalScore(_ thermalState: String) -> Double {
         return {
             switch thermalState.lowercased() {
                 case "nominal": return 12.5
@@ -65,7 +69,7 @@ class SystemOverviewCalculator {
         }()
     }
 
-    func calculateBatteryScore(batteryLevel: Double, batteryState: String, batteryLowMode: Bool) -> Double {
+    private func calculateBatteryScore(batteryLevel: Double, batteryState: String, batteryLowMode: Bool) -> Double {
         let levelScore : Double = {
             switch batteryLevel {
                 case 0...20.0: return 20.0
@@ -84,21 +88,22 @@ class SystemOverviewCalculator {
             }
         }()
 
-        print("Battery Level: \(batteryLevel), State: \(batteryState), Level Score: \(levelScore), State Multiplier: \(stateMultiplier) --> TOTAL SCORE: \(levelScore * stateMultiplier)")
         return levelScore * stateMultiplier
     }
 
-    func calculateStorageScore(storageAvailable: Double, storageCapacity: Double) -> Double {
+    private func calculateStorageScore(storageAvailable: Double, storageCapacity: Double) -> Double {
         let availablePercentage = (storageAvailable / storageCapacity) * 100
 
-        if availablePercentage >= 20 { return 100 }
-        else if availablePercentage >= 10 { return 70 }
-        else if availablePercentage >= 5 { return 40 }
-        else if availablePercentage >= 3 { return 15 }
-        else { return 5 }
+        switch availablePercentage {
+            case 0..<3: return 5
+            case 3..<6: return 15
+            case 6..<11: return 40
+            case 11..<21: return 70
+            default: return 100
+        }
     }
 
-    func calculateMemoryScore(memoryAvailable: Double, memoryCapacity: Double) -> Double {
+    private func calculateMemoryScore(memoryAvailable: Double, memoryCapacity: Double) -> Double {
         return (memoryAvailable / memoryCapacity) * 100
     }
 

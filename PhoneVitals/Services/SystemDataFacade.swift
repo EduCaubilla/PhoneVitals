@@ -71,9 +71,11 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
                 guard let self = self else { return }
                 self.memoryData = info
 
-                Task { @MainActor in
+                Task {
                     let updatedData = await self.getAllSystemData()
-                    self.systemDataSubject.send(updatedData)
+                    await MainActor.run {
+                        self.systemDataSubject.send(updatedData)
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -90,9 +92,11 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
                 guard let self = self else { return }
                 self.cpuData = info
 
-                Task { @MainActor in
+                Task {
                     let updatedData = await self.getAllSystemData()
-                    self.systemDataSubject.send(updatedData)
+                    await MainActor.run {
+                        self.systemDataSubject.send(updatedData)
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -157,9 +161,7 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     @MainActor
     private func getBatteryLowPowerMode() -> Bool {
-        UIDevice.current.isBatteryMonitoringEnabled = true
-        let isLowPowerMode = UIDevice.current.isBatteryMonitoringEnabled
-        return isLowPowerMode
+        return ProcessInfo.processInfo.isLowPowerModeEnabled
     }
 
     @MainActor

@@ -110,7 +110,7 @@ class MainSystemDataViewModel {
             case .battery:
                 return systemOverviewCalculator.getOverallScoreLabel(score: overviewData?.batteryScore ?? 50.0)
             case .storage:
-                return systemOverviewCalculator.getOverallInvertedScoreLabel(score: overviewData?.storageScore ?? 50.0)
+                return systemOverviewCalculator.getOverallScoreLabel(score: overviewData?.storageScore ?? 50.0)
             case .ramMemory:
                 return systemOverviewCalculator.getOverallInvertedScoreLabel(score: overviewData?.memoryScore ?? 50.0)
             case .processor:

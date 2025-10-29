@@ -12,7 +12,6 @@ class SystemOverviewCalculator: SystemOverviewCalculationProtocol {
     var overviewData: OverviewData?
     
     var overviewDataCallCount: Int = 0
-    
     var weights: [SystemDataServiceSection: Double] {
         return [
             .thermalState: 0.3,    // Most critical - can damage device
@@ -119,7 +118,7 @@ class SystemOverviewCalculator: SystemOverviewCalculationProtocol {
                 return "Good"
             case 75..<90:
                 return "Great"
-            case 90...100:
+            case 90..<101:
                 return "Superb"
             default:
                 return "Unknown"
@@ -138,7 +137,7 @@ class SystemOverviewCalculator: SystemOverviewCalculationProtocol {
                 return "Fair"
             case 75..<90:
                 return "Poor"
-            case 90..<100:
+            case 90..<101:
                 return "Critical"
             default:
                 return "Unknown"
@@ -157,7 +156,7 @@ class SystemOverviewCalculator: SystemOverviewCalculationProtocol {
                 return .orange
             case 75..<90:
                 return .red
-            case 90..<100:
+            case 90..<101:
                 return .darkRed
             default:
                 return .primary

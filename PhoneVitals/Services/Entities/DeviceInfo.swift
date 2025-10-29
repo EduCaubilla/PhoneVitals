@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DeviceInfo {
+struct DeviceInfo : Equatable {
     let modelName: String
     let modelIdentifier: String
     let deviceSystemVersion: String

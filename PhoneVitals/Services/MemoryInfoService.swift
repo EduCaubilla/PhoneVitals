@@ -14,7 +14,7 @@ class MemoryInfoService {
     private weak var timer: Timer?
     private var cancellables = Set<AnyCancellable>()
 
-    let memoryInfoPublisher = PassthroughSubject<MemoryInfo, Never>()
+    var memoryInfoPublisher = PassthroughSubject<MemoryInfo, Never>()
 
     //MARK: - FUNCTIONS
 
@@ -51,7 +51,7 @@ class MemoryInfoService {
         }
 
         guard result == KERN_SUCCESS else {
-            print(">>> Error retrieving memory stats <<<")
+            print("Error retrieving memory stats in MemoryInforService.getMemoryData()")
             return nil
         }
 

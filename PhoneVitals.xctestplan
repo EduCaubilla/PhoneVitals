@@ -1,0 +1,36 @@
+{
+  "configurations" : [
+    {
+      "id" : "7AF60E9B-C9E8-44C1-AF4B-800C2C46031D",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:PhoneVitals.xcodeproj",
+      "identifier" : "776538202E8D75A30065C2C6",
+      "name" : "PhoneVitals"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:PhoneVitals.xcodeproj",
+        "identifier" : "7765382F2E8D75A50065C2C6",
+        "name" : "PhoneVitalsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PhoneVitals.xcodeproj",
+        "identifier" : "776538392E8D75A50065C2C6",
+        "name" : "PhoneVitalsUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

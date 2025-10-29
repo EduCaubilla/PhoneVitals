@@ -13,7 +13,7 @@ class CPUInfoService {
     private var timer: Timer?
     private var cancellables = Set<AnyCancellable>()
 
-    let cpuInfoPublisher = PassthroughSubject<CPUInfo, Never>()
+    var cpuInfoPublisher = PassthroughSubject<CPUInfo, Never>()
 
     //MARK: - FUNCTIONS
 

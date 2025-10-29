@@ -25,8 +25,6 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
     private let systemDataSubject = PassthroughSubject<SystemDataProfileModel?, Never>()
     private let deviceDataSubject = PassthroughSubject<DeviceInfo, Never>()
 
-    private let loadingSubject = CurrentValueSubject<Bool, Never>(false)
-
     //MARK: - Publishers for the viewModel to subscribe to
     var systemDataPublisher : AnyPublisher<SystemDataProfileModel?, Never> {
         systemDataSubject.eraseToAnyPublisher()
@@ -34,10 +32,6 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     var deviceDataPublisher : AnyPublisher<DeviceInfo, Never> {
         deviceDataSubject.eraseToAnyPublisher()
-    }
-
-    var isLoadingPublisher: AnyPublisher<Bool, Never> {
-        loadingSubject.eraseToAnyPublisher()
     }
 
     var cancellables : Set<AnyCancellable> = []
@@ -77,11 +71,11 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
                 guard let self = self else { return }
                 self.memoryData = info
 
-                Task { @MainActor in
-                    self.loadingSubject.send(true)
+                Task {
                     let updatedData = await self.getAllSystemData()
-                    self.systemDataSubject.send(updatedData)
-                    self.loadingSubject.send(false)
+                    await MainActor.run {
+                        self.systemDataSubject.send(updatedData)
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -98,11 +92,11 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
                 guard let self = self else { return }
                 self.cpuData = info
 
-                Task { @MainActor in
-                    self.loadingSubject.send(true)
+                Task {
                     let updatedData = await self.getAllSystemData()
-                    self.systemDataSubject.send(updatedData)
-                    self.loadingSubject.send(false)
+                    await MainActor.run {
+                        self.systemDataSubject.send(updatedData)
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -167,9 +161,7 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     @MainActor
     private func getBatteryLowPowerMode() -> Bool {
-        UIDevice.current.isBatteryMonitoringEnabled = true
-        let isLowPowerMode = UIDevice.current.isBatteryMonitoringEnabled
-        return isLowPowerMode
+        return ProcessInfo.processInfo.isLowPowerModeEnabled
     }
 
     @MainActor

@@ -16,10 +16,9 @@ class MainSystemDataViewModel {
     private(set) var deviceData: DeviceInfo?
     private(set) var systemData: SystemDataProfileModel?
     private(set) var overviewData: OverviewData?
-    var isLoading: Bool = false
+    var isLoading: Bool = true
 
     private let systemDataFacade: any SystemDataFacadeProtocol
-//    private let systemDataStore: SystemDataStoreProtocol
 
     private let systemOverviewCalculator: SystemOverviewCalculator
 
@@ -27,22 +26,17 @@ class MainSystemDataViewModel {
 
     //MARK: - INITIALIZER
     init(systemDataFacade: any SystemDataFacadeProtocol = SystemDataFacade(),
-//         systemDataStore: SystemDataStoreProtocol,
          systemOverviewCalculator: SystemOverviewCalculator = SystemOverviewCalculator()) {
+
         self.systemDataFacade = systemDataFacade
-//        self.systemDataStore = systemDataStore
         self.systemOverviewCalculator = systemOverviewCalculator
+
+        self.isLoading = true
 
         setupSubscriptions()
 
-        Task { @MainActor in
-            self.isLoading = true
-
-            loadSystemDeviceData()
-
-            self.isLoading = false
-
-//            await saveProfile()
+        Task {
+            await loadSystemDeviceData()
         }
     }
 
@@ -66,61 +60,30 @@ class MainSystemDataViewModel {
                 self?.deviceData = deviceData
             }
             .store(in: &cancellables)
-
-        //Subscribe to loading data
-        systemDataFacade.isLoadingPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] loading in
-                self?.isLoading = loading
-            }
-            .store(in: &cancellables)
     }
 
     //MARK: - Load data
+    @MainActor
+    func loadSystemDeviceData() async {
+        isLoading = true
+
+        try? await Task.sleep(nanoseconds: 300_000_000)
+
+        await loadFacadeData()
+        loadOverviewData()
+
+        isLoading = false
+    }
+
     func loadFacadeData() async {
-        Task { @MainActor in
-            isLoading = true
-            self.systemData =  await self.systemDataFacade.getAllSystemData()
-            self.deviceData = await self.systemDataFacade.getAllDeviceData()
-            isLoading = false
-        }
+        self.systemData =  await self.systemDataFacade.getAllSystemData()
+        self.deviceData = await self.systemDataFacade.getAllDeviceData()
     }
 
     func loadOverviewData() {
-        Task { @MainActor in
-            guard let systemData = systemData else { return }
-            overviewData = systemOverviewCalculator.calculateOverviewData(profile: systemData)
-        }
+        guard let systemData = systemData else { return }
+        overviewData = systemOverviewCalculator.calculateOverviewData(profile: systemData)
     }
-
-    func loadSystemDeviceData() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-            Task { @MainActor in
-                guard let self else {
-                    print("Error in MainSystemDataViewModel.loadSystemDeviceData(): self is nil")
-                    return
-                }
-                await self.loadFacadeData()
-                self.loadOverviewData()
-            }
-        }
-    }
-
-    //MARK: - Save data
-    //Commented so it can be added on next phase
-//    func saveProfile() async {
-//        guard let systemData = systemData else { return }
-//        do {
-//            let profileSaved = try systemDataStore.save(systemData)
-//            if profileSaved {
-//                print("Profile saved successfully")
-//            } else {
-//                print("Profile not saved")
-//            }
-//        } catch {
-//            print("There was an error trying to save the profile \(String(describing: systemData.id)) : \(error.localizedDescription)")
-//        }
-//    }
 
     //MARK: - View usage functions
     func getOverviewValueFor(_ section: SystemDataServiceSection) -> Double {
@@ -147,7 +110,7 @@ class MainSystemDataViewModel {
             case .battery:
                 return systemOverviewCalculator.getOverallScoreLabel(score: overviewData?.batteryScore ?? 50.0)
             case .storage:
-                return systemOverviewCalculator.getOverallInvertedScoreLabel(score: overviewData?.storageScore ?? 50.0)
+                return systemOverviewCalculator.getOverallScoreLabel(score: overviewData?.storageScore ?? 50.0)
             case .ramMemory:
                 return systemOverviewCalculator.getOverallInvertedScoreLabel(score: overviewData?.memoryScore ?? 50.0)
             case .processor:

@@ -17,7 +17,7 @@ struct StateLinearIconBadge: View {
     var lineThickness: CGFloat = 10.0
     var textAlignment: HorizontalAlignment = .leading
 
-    var reverseGradientList: [SystemDataServiceSection] = [.battery]
+    var reverseGradientList: [SystemDataServiceSection] = [.battery, .storage]
     var fontRegularList: [Font] = [.body, .subheadline, .callout, .footnote, .caption]
 
     private var lineGradient: LinearGradient { LinearGradient(colors: [.red, .orange, .yellow, .green], startPoint: .trailing, endPoint: .leading) }

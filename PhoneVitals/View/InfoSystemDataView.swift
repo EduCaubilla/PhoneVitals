@@ -24,7 +24,7 @@ struct InfoSystemDataView: View {
             ScrollView{
                 //MARK: - OVERVIEW EXPLAINED
                 VStack(alignment: .center, spacing: 8){
-                    Text(Constants.overviewLabel)
+                    Text(Constants.overviewDataLabel)
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundStyle(.primary.opacity(0.5))
@@ -79,7 +79,7 @@ struct InfoSystemDataView: View {
                     .foregroundStyle(.secondary)
 
                     //MARK: - Information
-                    Text(Constants.informationLabel)
+                    Text(Constants.informationDataLabel)
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundStyle(.primary.opacity(0.5))

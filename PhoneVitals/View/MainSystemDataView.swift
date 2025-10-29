@@ -10,15 +10,12 @@ import SwiftData
 
 struct MainSystemDataView: View {
     //MARK: - PROPERTIES
-//    @Environment(\.modelContext) var modelContext
-
     @State private var viewModel : MainSystemDataViewModel?
     @State private var showOverallInfo: Bool = false
 
     //MARK: - INITIALIZER
     init(viewModel: MainSystemDataViewModel? = MainSystemDataViewModel()) {
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(Color.pvDarkGreen)]
-//        self.viewModel = viewModel ?? MainSystemDataViewModel(systemDataStore: SystemDataStore(modelContext: modelContext))
         _viewModel = State(wrappedValue: viewModel!)
     }
 
@@ -57,7 +54,7 @@ struct MainSystemDataView: View {
                                         .foregroundStyle(.primary.opacity(0.5))
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding(.top, -8)
-                                        .padding(.leading, 10)
+                                        .padding(.leading, 15)
 
                                     /// Overview Icon
                                     HStack(alignment: .top, spacing: 5) {
@@ -71,6 +68,7 @@ struct MainSystemDataView: View {
                                         .scaleEffect(2)
                                         .frame(width: 125, height: 125, alignment: .center)
                                         .accessibilityIdentifier("Overview Main Icon")
+                                        .padding(.bottom, 10)
 
                                         Spacer()
                                     }
@@ -96,13 +94,12 @@ struct MainSystemDataView: View {
                                         .padding(.horizontal)
                                         .accessibilityIdentifier("Overview Icon Badge")
                                     }
-                                    .frame(minWidth: 100, idealWidth: 200, maxWidth: 250, alignment: .top)
+                                    .frame(minWidth: 150, idealWidth: 200, maxWidth: 300, alignment: .top)
                                 } //: LAZYHGRID - Overview data
-                                .frame(maxWidth: .infinity, maxHeight: 280, alignment: .center)
-                                .padding(.top)
 
                                 Divider()
                                     .padding(10)
+                                    .padding(.horizontal, 20)
 
                                 //MARK: - Section Device Information
                                 VStack(alignment: .center) {
@@ -114,12 +111,19 @@ struct MainSystemDataView: View {
                                         .padding(.bottom, 3)
 
                                     VStack {
-                                        Text(String(format: Constants.formatDeviceLabel, deviceData.modelName, deviceData.modelIdentifier)) // Model Name (Model Identifier)
-                                            .foregroundColor(.secondary)
-
-                                        Text(deviceData.deviceSystemVersion) // System Version
+                                        Text(deviceData.deviceName) // Device name
                                             .foregroundColor(.secondary)
                                             .padding(.bottom, 5)
+
+                                        HStack {
+                                            Text(String(format: Constants.formatDeviceLabel, deviceData.modelName, deviceData.modelIdentifier)) // Model Name (Model Identifier)
+
+                                            Rectangle().frame(width: 1, height: 20)
+                                                .foregroundColor(.secondary)
+
+                                            Text(deviceData.deviceSystemVersion) // System Version
+                                        }
+                                        .foregroundStyle(.secondary)
                                     } //: VSTACK
                                 } //: VSTACK
                                 .frame(maxWidth: .infinity, maxHeight: 120, alignment: .center)
@@ -243,9 +247,9 @@ struct MainSystemDataView: View {
                                             }
                                         } //: ROW 3
                                         .padding(.bottom, 5)
-                                    }
-                                }
-                                .padding(.horizontal, 10)
+                                    } //: GRID
+                                } //: VSTACK
+                                .padding(.horizontal, 15)
                                 .padding(.vertical, 15)
 
                             } //: VSTACK MAIN
@@ -263,14 +267,6 @@ struct MainSystemDataView: View {
                                         }
                                 }
                             }
-                            //                            .toolbar {
-                            //                                ToolbarItem(placement: .navigationBarTrailing) {
-                            //                                    NavigationLink(destination: HistorySystemDataView()){
-                            //                                        Image(systemName: "clock.arrow.circlepath")
-                            //                                            .foregroundStyle(Color.secondary)
-                            //                                    }
-                            //                                }
-                            //                            }
                             .sheet(isPresented: $showOverallInfo) {
                                 InfoSystemDataView()
                             }
@@ -282,14 +278,10 @@ struct MainSystemDataView: View {
                 }
             } //: ZSTACK
         } //: NAV
-//        .task {
-//            viewModel = MainSystemDataViewModel(systemDataStore: SystemDataStore(modelContext: modelContext))
-//        }
     } //: VIEW
 }
 
 //MARK: - PREVIEW
 #Preview {
     MainSystemDataView()
-//        .modelContainer(for: SystemDataProfileDTO.self, inMemory: true)
 }

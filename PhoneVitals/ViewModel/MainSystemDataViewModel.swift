@@ -19,7 +19,6 @@ class MainSystemDataViewModel {
     var isLoading: Bool = true
 
     private let systemDataFacade: any SystemDataFacadeProtocol
-//    private let systemDataStore: SystemDataStoreProtocol
 
     private let systemOverviewCalculator: SystemOverviewCalculator
 
@@ -27,11 +26,9 @@ class MainSystemDataViewModel {
 
     //MARK: - INITIALIZER
     init(systemDataFacade: any SystemDataFacadeProtocol = SystemDataFacade(),
-//         systemDataStore: SystemDataStoreProtocol,
          systemOverviewCalculator: SystemOverviewCalculator = SystemOverviewCalculator()) {
 
         self.systemDataFacade = systemDataFacade
-//        self.systemDataStore = systemDataStore
         self.systemOverviewCalculator = systemOverviewCalculator
 
         self.isLoading = true
@@ -40,7 +37,6 @@ class MainSystemDataViewModel {
 
         Task {
             await loadSystemDeviceData()
-//            await saveProfile()
         }
     }
 
@@ -96,22 +92,6 @@ class MainSystemDataViewModel {
         guard let systemData = systemData else { return }
         overviewData = systemOverviewCalculator.calculateOverviewData(profile: systemData)
     }
-
-    //MARK: - Save data
-    //Commented so it can be added on next phase
-//    func saveProfile() async {
-//        guard let systemData = systemData else { return }
-//        do {
-//            let profileSaved = try systemDataStore.save(systemData)
-//            if profileSaved {
-//                print("Profile saved successfully")
-//            } else {
-//                print("Profile not saved")
-//            }
-//        } catch {
-//            print("There was an error trying to save the profile \(String(describing: systemData.id)) : \(error.localizedDescription)")
-//        }
-//    }
 
     //MARK: - View usage functions
     func getOverviewValueFor(_ section: SystemDataServiceSection) -> Double {

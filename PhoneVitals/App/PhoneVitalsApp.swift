@@ -14,6 +14,5 @@ struct PhoneVitalsApp: App {
         WindowGroup {
             MainSystemDataView()
         }
-//        .modelContainer(SystemModelContainer.shared)
     }
 }

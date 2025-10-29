@@ -16,6 +16,9 @@ struct Constants {
     static let informationLabel: String = "Information"
     static let deviceInformationLabel: String = "Device Information"
 
+    static let overviewDataLabel: String = "Overview Data"
+    static let informationDataLabel: String = "Information Data"
+
     static let freeLabel: String = "Free - "
     static let usedLabel: String = "Used - "
     static let totalLabel: String = "Total - "

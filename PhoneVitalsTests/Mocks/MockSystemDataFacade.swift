@@ -40,7 +40,6 @@ class MockSystemDataFacade: SystemDataFacadeProtocol {
     //MARK: - FUNCTIONS
     func getAllSystemData() async -> SystemDataProfileModel {
         getAllSystemDataCalledCount += 1
-        print("Get All System Data Called")
         dump(mockSystemData)
         return mockSystemData ?? SystemDataProfileModel.mock()
     }

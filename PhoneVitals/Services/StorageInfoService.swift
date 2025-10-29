@@ -35,7 +35,7 @@ class StorageInfoService {
                 usedCapacity: Tools.bytesToGigaBytes(usedCapacity)
             )
         } catch {
-            print("Error getting storage info \(error)")
+            print("Error getting storage info \(error) in StorageInfoService.setStorageInfo()")
             return nil
         }
     }

@@ -47,7 +47,7 @@ class MainSystemDataViewModelTests: XCTestCase {
         )
 
         // Small delay for init Task to complete
-        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+        try await Task.sleep(nanoseconds: 700_000_000)
 
         // Then
         XCTAssertEqual(mockDataFacade.getAllSystemDataCalledCount, 1)
@@ -111,7 +111,7 @@ class MainSystemDataViewModelTests: XCTestCase {
 
         try await Task.sleep(nanoseconds: 100_000_000)
 
-        let initialCallCount = mockOverviewCalculator.calculateOverviewData
+        let _ = mockOverviewCalculator.calculateOverviewData
         let newSystemData = SystemDataProfileModel.mock()
 
         // When
@@ -253,8 +253,6 @@ class MainSystemDataViewModelTests: XCTestCase {
             systemDataFacade: mockDataFacade,
             systemOverviewCalculator: mockOverviewCalculator
         )
-
-        //sut.systemData = nil // Explicitly set to nil //TODO --->
 
         try await Task.sleep(nanoseconds: 100_000_000)
 

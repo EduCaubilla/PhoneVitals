@@ -35,11 +35,17 @@ struct MainSystemDataView: View {
                 .ignoresSafeArea()
 
                 /// Content
-                if let viewModel,
-                   let systemData = viewModel.systemData,
-                   let overviewData = viewModel.overviewData,
-                   let deviceData = viewModel.deviceData {
-                    if (!viewModel.isLoading) {
+                if viewModel?.isLoading ?? false {
+                    ProgressView()
+                        .scaleEffect(2)
+                        .tint(.pvDarkGreen)
+                        .accessibilityIdentifier("ProgressView")
+
+                } else {
+                    if let viewModel = viewModel,
+                       let systemData = viewModel.systemData,
+                       let overviewData = viewModel.overviewData,
+                       let deviceData = viewModel.deviceData {
                         ScrollView {
                             VStack(alignment: .leading, spacing: 0) {
                                 //MARK: - Overview
@@ -64,6 +70,7 @@ struct MainSystemDataView: View {
                                         )
                                         .scaleEffect(2)
                                         .frame(width: 125, height: 125, alignment: .center)
+                                        .accessibilityIdentifier("Overview Main Icon")
 
                                         Spacer()
                                     }
@@ -87,6 +94,7 @@ struct MainSystemDataView: View {
                                             textAlignment: .leading
                                         )
                                         .padding(.horizontal)
+                                        .accessibilityIdentifier("Overview Icon Badge")
                                     }
                                     .frame(minWidth: 100, idealWidth: 200, maxWidth: 250, alignment: .top)
                                 } //: LAZYHGRID - Overview data
@@ -255,24 +263,21 @@ struct MainSystemDataView: View {
                                         }
                                 }
                             }
-//                            .toolbar {
-//                                ToolbarItem(placement: .navigationBarTrailing) {
-//                                    NavigationLink(destination: HistorySystemDataView()){
-//                                        Image(systemName: "clock.arrow.circlepath")
-//                                            .foregroundStyle(Color.secondary)
-//                                    }
-//                                }
-//                            }
+                            //                            .toolbar {
+                            //                                ToolbarItem(placement: .navigationBarTrailing) {
+                            //                                    NavigationLink(destination: HistorySystemDataView()){
+                            //                                        Image(systemName: "clock.arrow.circlepath")
+                            //                                            .foregroundStyle(Color.secondary)
+                            //                                    }
+                            //                                }
+                            //                            }
                             .sheet(isPresented: $showOverallInfo) {
                                 InfoSystemDataView()
                             }
                         } //: SCROLLVIEW
                         .refreshable {
-                            viewModel.loadSystemDeviceData()
+                            await viewModel.loadSystemDeviceData()
                         }
-                    }
-                    else {
-                        ProgressView()
                     }
                 }
             } //: ZSTACK

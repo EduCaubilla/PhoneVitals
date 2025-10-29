@@ -51,7 +51,7 @@ class MemoryInfoService {
         }
 
         guard result == KERN_SUCCESS else {
-            print(">>> Error retrieving memory stats <<<")
+            print("Error retrieving memory stats in MemoryInforService.getMemoryData()")
             return nil
         }
 

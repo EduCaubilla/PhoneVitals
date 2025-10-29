@@ -14,5 +14,4 @@ protocol SystemDataFacadeProtocol {
 
     var systemDataPublisher: AnyPublisher<SystemDataProfileModel?, Never> { get }
     var deviceDataPublisher: AnyPublisher<DeviceInfo, Never> { get }
-    var isLoadingPublisher: AnyPublisher<Bool, Never> { get }
 }

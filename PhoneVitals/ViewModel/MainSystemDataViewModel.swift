@@ -60,14 +60,6 @@ class MainSystemDataViewModel {
                 self?.deviceData = deviceData
             }
             .store(in: &cancellables)
-
-        //Subscribe to loading data
-        systemDataFacade.isLoadingPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] loading in
-                self?.isLoading = loading
-            }
-            .store(in: &cancellables)
     }
 
     //MARK: - Load data

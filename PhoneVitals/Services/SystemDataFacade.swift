@@ -25,8 +25,6 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
     private let systemDataSubject = PassthroughSubject<SystemDataProfileModel?, Never>()
     private let deviceDataSubject = PassthroughSubject<DeviceInfo, Never>()
 
-    private let loadingSubject = CurrentValueSubject<Bool, Never>(false)
-
     //MARK: - Publishers for the viewModel to subscribe to
     var systemDataPublisher : AnyPublisher<SystemDataProfileModel?, Never> {
         systemDataSubject.eraseToAnyPublisher()
@@ -34,10 +32,6 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
 
     var deviceDataPublisher : AnyPublisher<DeviceInfo, Never> {
         deviceDataSubject.eraseToAnyPublisher()
-    }
-
-    var isLoadingPublisher: AnyPublisher<Bool, Never> {
-        loadingSubject.eraseToAnyPublisher()
     }
 
     var cancellables : Set<AnyCancellable> = []
@@ -78,10 +72,8 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
                 self.memoryData = info
 
                 Task { @MainActor in
-                    self.loadingSubject.send(true)
                     let updatedData = await self.getAllSystemData()
                     self.systemDataSubject.send(updatedData)
-                    self.loadingSubject.send(false)
                 }
             }
             .store(in: &cancellables)
@@ -99,10 +91,8 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
                 self.cpuData = info
 
                 Task { @MainActor in
-                    self.loadingSubject.send(true)
                     let updatedData = await self.getAllSystemData()
                     self.systemDataSubject.send(updatedData)
-                    self.loadingSubject.send(false)
                 }
             }
             .store(in: &cancellables)

@@ -80,7 +80,7 @@ struct MainSystemDataView: View {
                                         GridRow {
                                             ForEach(0..<2, id: \.self) { indexColumn in
                                                 let currentIndex = indexRow*2 + indexColumn
-                                                if currentIndex < SystemDataServiceSection.allCases.count {
+                                                if currentIndex < SystemDataServiceSection.allCases.count - 1 { //Last item in enum is example case for information view. No show.
                                                     let currentSection = SystemDataServiceSection.allCases[currentIndex]
 
                                                     StateLinearIconBadge(
@@ -114,7 +114,7 @@ struct MainSystemDataView: View {
                                         .padding(.top, 5)
                                         .padding(.bottom, 3)
 
-                                    VStack {
+                                    VStack(alignment: .center) {
                                         Text(deviceData.deviceName) // Device name
                                             .foregroundColor(.secondary)
                                             .padding(.bottom, 5)
@@ -129,9 +129,9 @@ struct MainSystemDataView: View {
                                         }
                                         .foregroundStyle(.secondary)
                                     } //: VSTACK
+                                    .frame(maxWidth: .infinity)
                                 } //: VSTACK
                                 .padding(.vertical, 5)
-                                .padding(.horizontal, 10)
 
                                 //MARK: - Additional Information
                                 VStack(alignment: .center, spacing: 0) {
@@ -156,7 +156,7 @@ struct MainSystemDataView: View {
                                                     title: .battery,
                                                     titleFont: .headline,
                                                     label: "\(systemData.batteryLevel.toStringWhole()) \(Constants.percentageLabel)",
-                                                    lineLevel: systemData.batteryLevel,
+                                                    lineLevel: 80.0,
                                                     lineThickness: 7,
                                                     textAlignment: .center
                                                 )
@@ -177,7 +177,7 @@ struct MainSystemDataView: View {
                                                     title: .storage,
                                                     titleFont: .headline,
                                                     label: "",
-                                                    lineLevel: Tools.percent(partial: systemData.storageUsed, total: systemData.storageCapacity),
+                                                    lineLevel: Tools.percent(partial: 80.7, total: 128),
                                                     lineThickness: 7,
                                                     textAlignment: .center
                                                 )
@@ -255,27 +255,27 @@ struct MainSystemDataView: View {
                                 } //: VSTACK
                                 .padding(.vertical, 15)
                                 .padding(.horizontal, 10)
+                                .navigationTitle(Text(Constants.appLabel))
+                                .navigationBarTitleDisplayMode(.inline)
+                                .toolbarBackground(.pvLightGreen, for: .navigationBar)
+                                .toolbar {
+                                    ToolbarItem(placement: .navigationBarTrailing) {
+                                        Image(systemName: Constants.infoCircleIcon)
+                                            .foregroundStyle(.pvDarkGreen)
+                                            .font(.subheadline)
+                                            .onTapGesture {
+                                                showOverallInfo.toggle()
+                                            }
+                                    }
+                                } //: TOOLBAR
 
                             } //: VSTACK MAIN
-                            .navigationTitle(Text(Constants.appLabel))
-                            .navigationBarTitleDisplayMode(.inline)
                             .padding(.horizontal, 10)
                             .padding(.top, 10)
-                            .toolbarBackground(.pvLightGreen, for: .navigationBar)
-                            .toolbar {
-                                ToolbarItem(placement: .navigationBarTrailing) {
-                                    Image(systemName: Constants.infoCircleIcon)
-                                        .foregroundStyle(.pvDarkGreen)
-                                        .font(.subheadline)
-                                        .onTapGesture {
-                                            showOverallInfo.toggle()
-                                        }
-                                }
-                            }
                             .sheet(isPresented: $showOverallInfo) {
                                 InfoSystemDataView()
                                     .presentationDragIndicator(.visible)
-                                    .presentationDetents([.large])
+                                    .presentationDetents([.fraction(0.95)])
                             }
                         } //: SCROLLVIEW
                         .refreshable {

@@ -274,6 +274,8 @@ struct MainSystemDataView: View {
                             }
                             .sheet(isPresented: $showOverallInfo) {
                                 InfoSystemDataView()
+                                    .presentationDragIndicator(.visible)
+                                    .presentationDetents([.large])
                             }
                         } //: SCROLLVIEW
                         .refreshable {

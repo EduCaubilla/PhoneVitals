@@ -98,7 +98,10 @@ class SystemOverviewCalculator: SystemOverviewCalculationProtocol {
             case 0..<3: return 5
             case 3..<6: return 15
             case 6..<11: return 40
-            case 11..<21: return 70
+            case 11..<16: return 60
+            case 16..<21: return 75
+            case 21..<41: return 85
+            case 41..<81: return 95
             default: return 100
         }
     }

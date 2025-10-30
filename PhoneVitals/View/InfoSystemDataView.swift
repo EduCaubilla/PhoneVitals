@@ -99,6 +99,7 @@ struct InfoSystemDataView: View {
 
                 } //: VSTACK Content
                 .padding(20)
+                .padding(.top, 10)
             }
         }
     }

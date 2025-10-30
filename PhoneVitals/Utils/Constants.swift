@@ -19,6 +19,10 @@ struct Constants {
     static let overviewDataLabel: String = "Overview Data"
     static let informationDataLabel: String = "Information Data"
 
+    static let progressViewAccessId: String = "ProgressView"
+    static let overviewMainAccessId: String = "OverviewMainIcon"
+    static let overviewIconAccessId: String = "OverviewIconBadge"
+
     static let freeLabel: String = "Free - "
     static let usedLabel: String = "Used - "
     static let totalLabel: String = "Total - "

@@ -36,7 +36,7 @@ struct MainSystemDataView: View {
                     ProgressView()
                         .scaleEffect(2)
                         .tint(.pvDarkGreen)
-                        .accessibilityIdentifier("ProgressView")
+                        .accessibilityIdentifier(Constants.progressViewAccessId)
 
                 } else {
                     if let viewModel = viewModel,
@@ -44,9 +44,9 @@ struct MainSystemDataView: View {
                        let overviewData = viewModel.overviewData,
                        let deviceData = viewModel.deviceData {
                         ScrollView {
-                            VStack(alignment: .leading, spacing: 0) {
+                            VStack(alignment: .leading, spacing: 5) {
                                 //MARK: - Overview
-                                VStack(alignment: .leading, spacing: 0) {
+                                VStack(alignment: .leading, spacing: 5) {
                                     /// Overview Title
                                     Text(Constants.overviewLabel)
                                         .font(.title)
@@ -54,7 +54,7 @@ struct MainSystemDataView: View {
                                         .foregroundStyle(.primary.opacity(0.5))
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding(.top, -8)
-                                        .padding(.leading, 15)
+                                        .padding(.leading, 10)
 
                                     /// Overview Icon
                                     HStack(alignment: .top, spacing: 5) {
@@ -67,7 +67,7 @@ struct MainSystemDataView: View {
                                         )
                                         .scaleEffect(2)
                                         .frame(width: 125, height: 125, alignment: .center)
-                                        .accessibilityIdentifier("Overview Main Icon")
+                                        .accessibilityIdentifier(Constants.overviewMainAccessId)
                                         .padding(.bottom, 10)
 
                                         Spacer()
@@ -75,31 +75,35 @@ struct MainSystemDataView: View {
                                 } //: VSTACK - Overview
 
                                 /// Overview Data
-                                LazyHGrid(rows: [
-                                    GridItem(.flexible(minimum: 70, maximum: 100)),
-                                    GridItem(.flexible(minimum: 70, maximum: 100)),
-                                    GridItem(.flexible(minimum: 70, maximum: 100))
-                                ], spacing: 5) {
-                                    ForEach(0..<5) { index in
-                                        let currentSection = SystemDataServiceSection.allCases[index]
+                                Grid(horizontalSpacing: 10, verticalSpacing: 20) {
+                                    ForEach(0..<3, id: \.self) { indexRow in
+                                        GridRow {
+                                            ForEach(0..<2, id: \.self) { indexColumn in
+                                                let currentIndex = indexRow*2 + indexColumn
+                                                if currentIndex < SystemDataServiceSection.allCases.count {
+                                                    let currentSection = SystemDataServiceSection.allCases[currentIndex]
 
-                                        StateLinearIconBadge(
-                                            title: currentSection,
-                                            titleFont: .callout,
-                                            label: viewModel.getOverviewLabelFor(currentSection),
-                                            lineLevel: viewModel.getOverviewValueFor(currentSection),
-                                            lineThickness: 10.0,
-                                            textAlignment: .leading
-                                        )
-                                        .padding(.horizontal)
-                                        .accessibilityIdentifier("Overview Icon Badge")
+                                                    StateLinearIconBadge(
+                                                        title: currentSection,
+                                                        titleFont: .callout,
+                                                        label: viewModel.getOverviewLabelFor(currentSection),
+                                                        lineLevel: viewModel.getOverviewValueFor(currentSection),
+                                                        lineThickness: 10.0,
+                                                        textAlignment: .leading
+                                                    )
+                                                    .padding(.horizontal)
+                                                    .accessibilityIdentifier(Constants.overviewIconAccessId)
+                                                } else {
+                                                    Color.clear // Placeholder for empty cells
+                                                }
+                                            }
+                                        }
                                     }
-                                    .frame(minWidth: 150, idealWidth: 200, maxWidth: 300, alignment: .top)
-                                } //: LAZYHGRID - Overview data
+                                } //: GRID - Overview data
+                                .padding(.vertical, 10)
 
                                 Divider()
                                     .padding(10)
-                                    .padding(.horizontal, 20)
 
                                 //MARK: - Section Device Information
                                 VStack(alignment: .center) {
@@ -126,8 +130,8 @@ struct MainSystemDataView: View {
                                         .foregroundStyle(.secondary)
                                     } //: VSTACK
                                 } //: VSTACK
-                                .frame(maxWidth: .infinity, maxHeight: 120, alignment: .center)
                                 .padding(.vertical, 5)
+                                .padding(.horizontal, 10)
 
                                 //MARK: - Additional Information
                                 VStack(alignment: .center, spacing: 0) {
@@ -249,13 +253,14 @@ struct MainSystemDataView: View {
                                         .padding(.bottom, 5)
                                     } //: GRID
                                 } //: VSTACK
-                                .padding(.horizontal, 15)
                                 .padding(.vertical, 15)
+                                .padding(.horizontal, 10)
 
                             } //: VSTACK MAIN
                             .navigationTitle(Text(Constants.appLabel))
                             .navigationBarTitleDisplayMode(.inline)
-                            .padding(.horizontal, 20)
+                            .padding(.horizontal, 10)
+                            .padding(.top, 10)
                             .toolbarBackground(.pvLightGreen, for: .navigationBar)
                             .toolbar {
                                 ToolbarItem(placement: .navigationBarTrailing) {

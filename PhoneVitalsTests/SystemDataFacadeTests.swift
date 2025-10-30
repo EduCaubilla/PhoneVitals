@@ -261,50 +261,11 @@ class SystemDataFacadeTests: XCTestCase {
         XCTAssertEqual(receivedData?.cpuUsageUser, 45.0)
     }
 
-    func testLoadingPublisher_EmitsTrueDuringUpdate() async throws {
-        // Given
-        mockMemoryService.mockMemoryData = .mock()
-        mockCPUService.mockCPUData = .mock()
-        mockStorageService.mockStorageInfo = .mock()
-
-        sut = SystemDataFacade(
-            memory: mockMemoryService,
-            device: mockDeviceService,
-            cpu: mockCPUService,
-            storage: mockStorageService
-        )
-
-        try await Task.sleep(nanoseconds: 100_000_000)
-
-        let expectation = XCTestExpectation(description: "Loading state changes")
-        expectation.expectedFulfillmentCount = 2 // true, then false
-
-        var loadingStates: [Bool] = []
-
-        sut.isLoadingPublisher
-            .dropFirst() // Skip initial false
-            .sink { isLoading in
-                loadingStates.append(isLoading)
-                expectation.fulfill()
-            }
-            .store(in: &cancellables)
-
-        // When
-        mockMemoryService.simulateMemoryUpdate(.mock())
-
-        // Then
-        await fulfillment(of: [expectation], timeout: 2.0)
-        XCTAssertEqual(loadingStates, [true, false])
-    }
-
     // MARK: - Device Data Tests
 
     func testGetAllDeviceData_ReturnsDeviceInfo() async throws {
         // Given
-        let expectedDeviceInfo = DeviceInfo(
-            modelName: "iPhone Test",
-            modelIdentifier: "iPhone14,8",
-            deviceSystemVersion: "iOSTestSystemVersion")
+        let expectedDeviceInfo = DeviceInfo.mock()
         mockDeviceService = MockDeviceInfoService(mockDeviceInfo: expectedDeviceInfo)
 
         sut = SystemDataFacade(

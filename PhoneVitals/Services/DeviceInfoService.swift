@@ -38,4 +38,14 @@ class DeviceInfoService {
     func getDeviceInfo() -> DeviceInfo {
         return deviceInfo
     }
+
+    func getDeviceData() {
+        let device = UIDevice.current
+
+        print("Name: \(device.name)")
+        print("Model: \(device.model)")
+        print("System Name: \(device.systemName)")
+        print("System Version: \(device.systemVersion)")
+        print("Identifier: \(device.identifierForVendor?.uuidString ?? "N/A")")
+    }
 }

@@ -9,6 +9,9 @@ import SwiftUI
 
 struct InfoSystemDataView: View {
 
+    @Environment(\.dismiss) private var dismiss
+    private let currentPlatform = UIDevice.current.userInterfaceIdiom
+
     //MARK: - BODY
     var body: some View {
         ZStack {
@@ -24,11 +27,25 @@ struct InfoSystemDataView: View {
             ScrollView{
                 //MARK: - OVERVIEW EXPLAINED
                 VStack(alignment: .center, spacing: 8){
-                    Text(Constants.overviewDataLabel)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.primary.opacity(0.5))
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    HStack {
+                        Text(Constants.overviewDataLabel)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.primary.opacity(0.5))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        Spacer()
+
+                        if currentPlatform == .pad {
+                            Image(systemName: "xmark.circle.fill")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundStyle(.pvDarkGreen)
+                                .onTapGesture {
+                                    dismiss()
+                                }
+                        }
+                    }
 
                     HStack(alignment: .top, spacing: 10) {
                         Spacer()
@@ -98,8 +115,9 @@ struct InfoSystemDataView: View {
                     .foregroundStyle(.secondary)
 
                 } //: VSTACK Content
-                .padding(20)
-                .padding(.top, 10)
+                .padding(
+                    currentPlatform == .pad ? EdgeInsets(top: 20, leading: 30, bottom: 10, trailing: 30) : EdgeInsets(top: 20, leading: 20, bottom: 10, trailing: 20)
+                )
             }
         }
     }

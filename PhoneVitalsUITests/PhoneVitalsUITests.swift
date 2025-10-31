@@ -59,7 +59,7 @@ final class PhoneVitalsUITests: XCTestCase {
 
     func testOverallHealthScoreIconDisplayed() throws {
         // The StateRoundIcon should be visible
-        let healthIcon = app.otherElements["Overview Main Icon"]
+        let healthIcon = app.otherElements["OverviewMainIcon"]
 
         XCTAssertTrue(healthIcon.waitForExistence(timeout: 1) , "Overall health score icon should be displayed")
     }
@@ -67,7 +67,7 @@ final class PhoneVitalsUITests: XCTestCase {
     func testOverviewDataBadgesExist() throws {
         sleep(5)
         // There should be 5 StateLinearIconBadge elements for the overview section
-        let badges = app.otherElements.matching(identifier: "Overview Icon Badge")
+        let badges = app.otherElements.matching(identifier: "OverviewIconBadge")
         XCTAssertGreaterThanOrEqual(badges.count, 5, "At least 5 overview badges should exist")
     }
 

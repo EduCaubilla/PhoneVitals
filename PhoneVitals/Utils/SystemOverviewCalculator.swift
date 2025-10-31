@@ -71,10 +71,11 @@ class SystemOverviewCalculator: SystemOverviewCalculationProtocol {
     private func calculateBatteryScore(batteryLevel: Double, batteryState: String, batteryLowMode: Bool) -> Double {
         let levelScore : Double = {
             switch batteryLevel {
-                case 0...20.0: return 20.0
+                case 0: return 5.0
+                case 1.0...20.0: return 20.0
                 case 21.0...40.0: return 70.0
                 case 41.0...80.0: return 95.0
-                case 81.0...99.0: return 80.0
+                case 81.0...100.0: return 80.0
                 default: return 50.0
             }
         }()
@@ -97,7 +98,10 @@ class SystemOverviewCalculator: SystemOverviewCalculationProtocol {
             case 0..<3: return 5
             case 3..<6: return 15
             case 6..<11: return 40
-            case 11..<21: return 70
+            case 11..<16: return 60
+            case 16..<21: return 75
+            case 21..<41: return 85
+            case 41..<81: return 95
             default: return 100
         }
     }

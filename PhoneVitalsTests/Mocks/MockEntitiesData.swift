@@ -95,6 +95,7 @@ extension SystemDataProfileModel {
 extension DeviceInfo {
     static func mock() -> DeviceInfo {
         return DeviceInfo(
+            deviceName: "My iPhone",
             modelName: "iPhone Test",
             modelIdentifier: "iPhone14,8",
             deviceSystemVersion: "iOSTestSystemVersion")
@@ -103,7 +104,7 @@ extension DeviceInfo {
 
 extension OverviewData {
     static func mock(
-        overallHealthScore: Double = -1,
+        overallHealthScore: Double = 0,
         overallHealthLabel: String = "",
         overallHealthColor: Color = .white,
 

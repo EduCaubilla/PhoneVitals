@@ -13,6 +13,8 @@ struct MainSystemDataView: View {
     @State private var viewModel : MainSystemDataViewModel?
     @State private var showOverallInfo: Bool = false
 
+    private let currentPlatform = UIDevice.current.userInterfaceIdiom
+
     //MARK: - INITIALIZER
     init(viewModel: MainSystemDataViewModel? = MainSystemDataViewModel()) {
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(Color.pvDarkGreen)]
@@ -156,7 +158,7 @@ struct MainSystemDataView: View {
                                                     title: .battery,
                                                     titleFont: .headline,
                                                     label: "\(systemData.batteryLevel.toStringWhole()) \(Constants.percentageLabel)",
-                                                    lineLevel: 80.0,
+                                                    lineLevel: systemData.batteryLevel,
                                                     lineThickness: 7,
                                                     textAlignment: .center
                                                 )
@@ -177,7 +179,7 @@ struct MainSystemDataView: View {
                                                     title: .storage,
                                                     titleFont: .headline,
                                                     label: "",
-                                                    lineLevel: Tools.percent(partial: 80.7, total: 128),
+                                                    lineLevel: Tools.percent(partial: systemData.storageUsed, total: systemData.storageCapacity),
                                                     lineThickness: 7,
                                                     textAlignment: .center
                                                 )
@@ -231,7 +233,7 @@ struct MainSystemDataView: View {
                                                     title: .processor,
                                                     titleFont: .headline,
                                                     label: "",
-                                                    lineLevel: Tools.percent(partial: (systemData.cpuUsageUser + systemData.cpuUsageSystem), total: systemData.storageCapacity),
+                                                    lineLevel: Tools.percent(partial: (systemData.cpuUsageUser + systemData.cpuUsageSystem), total: (systemData.cpuUsageUser + systemData.cpuUsageSystem + systemData.cpuUsageInactive)),
                                                     lineThickness: 7,
                                                     textAlignment: .center
                                                 )
@@ -272,7 +274,7 @@ struct MainSystemDataView: View {
                             } //: VSTACK MAIN
                             .padding(.horizontal, 10)
                             .padding(.top, 10)
-                            .sheet(isPresented: $showOverallInfo) {
+                            .platformModal(isPresented: $showOverallInfo) {
                                 InfoSystemDataView()
                                     .presentationDragIndicator(.visible)
                                     .presentationDetents([.fraction(0.95)])

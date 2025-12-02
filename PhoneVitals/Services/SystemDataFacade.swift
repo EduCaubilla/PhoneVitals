@@ -48,8 +48,8 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
         self.cpu = cpu
 
         Task {
-            await fetchMemoryData()
-            await fetchCPUData()
+            try await fetchMemoryData()
+            try await fetchCPUData()
         }
     }
 
@@ -63,8 +63,8 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
     //MARK: - FUNCTIONS
 
     //MARK: - Memory data monitor
-    func fetchMemoryData() async {
-        self.memoryData = memory?.getMemoryData()
+    func fetchMemoryData() async throws {
+        self.memoryData = try memory?.getMemoryData()
 
         memory?.memoryInfoPublisher
             .sink { [weak self] info in
@@ -84,8 +84,8 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
     }
 
     //MARK: - CPU data monitor
-    func fetchCPUData() async {
-        self.cpuData = cpu?.getCPUData()
+    func fetchCPUData() async throws {
+        self.cpuData = try cpu?.getCPUData()
 
         cpu?.cpuInfoPublisher
             .sink { [weak self] info in
@@ -117,9 +117,9 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
         let batteryLevel = getBatteryLevel()
         let batteryState = getBatteryState()
         let batteryLowPowerMode = getBatteryLowPowerMode()
-        let storageCapacity = getStorageCapacity()
-        let storageUsed = getStorageUsed()
-        let storageAvailable = getStorageAvailable()
+        let storageCapacity = await getStorageCapacity()
+        let storageUsed = await getStorageUsed()
+        let storageAvailable = await getStorageAvailable()
         let memoryUsage = getMemoryUsage()
         let memoryCapacity = getMemoryCapacity()
         let memoryFree = getMemoryFree()
@@ -173,17 +173,17 @@ class SystemDataFacade : ObservableObject, SystemDataFacadeProtocol {
     }
 
     @MainActor
-    private func getStorageCapacity() -> Double {
+    private func getStorageCapacity() async -> Double {
         return storage?.getStorageInfo()?.totalCapacity ?? 0
     }
 
     @MainActor
-    private func getStorageUsed() -> Double {
+    private func getStorageUsed() async -> Double {
         return storage?.getStorageInfo()?.usedCapacity ?? 0
     }
 
     @MainActor
-    private func getStorageAvailable() -> Double {
+    private func getStorageAvailable() async -> Double {
         return storage?.getStorageInfo()?.availableCapacity ?? 0
     }
 

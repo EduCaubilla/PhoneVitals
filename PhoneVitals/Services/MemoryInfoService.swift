@@ -11,8 +11,7 @@ import Combine
 
 class MemoryInfoService {
     //MARK: - PROPERTIES
-    private weak var timer: Timer?
-    private var cancellables = Set<AnyCancellable>()
+    private var monitoringTask: Task<Void, Never>?
 
     var memoryInfoPublisher = PassthroughSubject<MemoryInfo, Never>()
 
@@ -22,25 +21,33 @@ class MemoryInfoService {
     func startMonitoring(interval: TimeInterval = 1.0) {
         stopMonitoring()
 
-        DispatchQueue.main.async { [weak self] in
-            self?.timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+        monitoringTask = Task { [weak self] in
+            while !Task.isCancelled {
                 self?.updateMemoryData()
+                try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
             }
         }
     }
 
     func stopMonitoring() {
-        timer?.invalidate()
-        timer = nil
+        monitoringTask?.cancel()
+        monitoringTask = nil
     }
 
-    func updateMemoryData() {
-        guard let memoryInfo = getMemoryData() else { return }
-        memoryInfoPublisher.send(memoryInfo)
+    nonisolated func updateMemoryData() {
+        do {
+            let memoryInfo = try getMemoryData()
+            Task { @MainActor in
+                guard let memoryInfo = memoryInfo else { return }
+                memoryInfoPublisher.send(memoryInfo)
+            }
+        } catch {
+            print("Error updating memory info in MemoryInforService.updateMemoryData(): \(error)")
+        }
     }
 
     //MARK: - Get data
-    func getMemoryData() -> MemoryInfo? {
+    func getMemoryData() throws -> MemoryInfo? {
         var stats = vm_statistics64()
         var count = mach_msg_type_number_t(MemoryLayout<vm_statistics64>.size / MemoryLayout<integer_t>.size )
 

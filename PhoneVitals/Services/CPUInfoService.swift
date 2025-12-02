@@ -10,32 +10,38 @@ import Combine
 
 class CPUInfoService {
     //MARK: - PROPERTIES
-    private var timer: Timer?
-    private var cancellables = Set<AnyCancellable>()
+    private var monitoringTask: Task<Void, Never>?
 
     var cpuInfoPublisher = PassthroughSubject<CPUInfo, Never>()
 
     //MARK: - FUNCTIONS
 
     //MARK: - Monitoring process
-    func startMonitoring(interval: TimeInterval = 1) {
+    func startMonitoring(interval: TimeInterval = 0.5) {
         stopMonitoring()
 
-        DispatchQueue.main.async { [weak self] in
-            self?.timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+        monitoringTask = Task { [weak self] in
+            while !Task.isCancelled {
                 self?.updateCPUData()
+                try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
             }
         }
     }
 
     func stopMonitoring() {
-        timer?.invalidate()
-        timer = nil
+        monitoringTask?.cancel()
+        monitoringTask = nil
     }
 
-    func updateCPUData() {
-        guard let cpuInfo = getCPUData() else { return }
-        cpuInfoPublisher.send(cpuInfo)
+    nonisolated func updateCPUData() {
+        do {
+            let cpuInfo = try getCPUData()
+            Task { @MainActor in
+                cpuInfoPublisher.send(cpuInfo)
+            }
+        } catch {
+            print("Error getting CPU info: \(error)")
+        }
     }
 
     //MARK: - Get data
@@ -45,7 +51,7 @@ class CPUInfoService {
         return (processorCount, activeProcessorCount)
     }
 
-    func getCPUData() -> CPUInfo? {
+    func getCPUData() throws -> CPUInfo {
             var cpuInfo: processor_info_array_t?
             var numCPUInfo: mach_msg_type_number_t = 0
             var numCPUs: natural_t = 0
@@ -56,7 +62,10 @@ class CPUInfoService {
                                              &cpuInfo,
                                              &numCPUInfo)
 
-            guard result == KERN_SUCCESS else { return nil }
+        guard result == KERN_SUCCESS else {
+            print("Error getting CPU data from mach in  getCPUData() : \(result)")
+            throw NSError(domain: "Error in get CPU data", code: 0)
+        }
 
             var totalSystemTime: UInt32 = 0
             var totalUserTime: UInt32 = 0
@@ -82,6 +91,12 @@ class CPUInfoService {
             let totalTicks = Double(totalSystemTime + totalUserTime + totalIdleTime + totalNiceTime)
 
             let resultProcessor = getProcessorCount()
+
+//            print("Total system time: \(totalSystemTime)")
+//            print("Total user time: \(totalUserTime)")
+//            print(("Total idle time: \(totalIdleTime)"))
+//            print("Total nice time: \(totalNiceTime)")
+//            print("Total ticks: \(totalTicks)")
 
             let resultCPUInfo = CPUInfo(
                 totalProcessors: resultProcessor.0,
